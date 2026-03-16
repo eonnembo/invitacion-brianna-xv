@@ -851,7 +851,7 @@ function actualizarNombres(val) {
 let ytPlayer = null;
 let musicPlaying = false;
 let playerReady = false;
-let startedOnce = false;
+let userInteracted = false;
 
 window.onYouTubeIframeAPIReady = function() {
   ytPlayer = new YT.Player('yt-player', {
@@ -871,7 +871,10 @@ window.onYouTubeIframeAPIReady = function() {
       onReady: function(e) {
         playerReady = true;
         e.target.setVolume(50);
-        // No llamamos playVideo() acá — esperamos el primer toque del usuario
+        // Si el usuario ya interactuó antes de que cargara, arrancamos ahora
+        if (userInteracted) {
+          arrancarMusica();
+        }
       },
       onStateChange: function(e) {
         if (e.data === YT.PlayerState.ENDED) {
@@ -883,35 +886,40 @@ window.onYouTubeIframeAPIReady = function() {
   });
 };
 
-// Arranca la música en el primer toque/click del usuario en cualquier parte
-function iniciarMusicaAlTocar() {
-  if (startedOnce || !playerReady) return;
-  startedOnce = true;
+function arrancarMusica() {
   ytPlayer.playVideo();
   const btn = document.getElementById('music-btn');
   btn.innerHTML = '⏸';
   btn.classList.add('playing');
   musicPlaying = true;
-  // Quitamos el listener una vez que arrancó
-  document.removeEventListener('touchstart', iniciarMusicaAlTocar);
-  document.removeEventListener('click', iniciarMusicaAlTocar);
 }
-document.addEventListener('touchstart', iniciarMusicaAlTocar, { once: true });
-document.addEventListener('click', iniciarMusicaAlTocar, { once: true });
+
+function onPrimeraInteraccion() {
+  if (userInteracted) return;
+  userInteracted = true;
+  document.removeEventListener('touchstart', onPrimeraInteraccion);
+  document.removeEventListener('scroll', onPrimeraInteraccion);
+  document.removeEventListener('click', onPrimeraInteraccion);
+
+  if (playerReady) {
+    arrancarMusica();
+  }
+  // Si no está listo todavía, onReady lo va a arrancar cuando cargue
+}
+
+document.addEventListener('touchstart', onPrimeraInteraccion, { passive: true });
+document.addEventListener('scroll', onPrimeraInteraccion, { passive: true });
+document.addEventListener('click', onPrimeraInteraccion);
 
 function toggleMusic() {
   const btn = document.getElementById('music-btn');
-  if (!playerReady) {
-    btn.textContent = '...';
-    setTimeout(() => toggleMusic(), 800);
-    return;
-  }
+  if (!playerReady) return;
   if (!musicPlaying) {
     ytPlayer.playVideo();
     btn.innerHTML = '⏸';
     btn.classList.add('playing');
     musicPlaying = true;
-    startedOnce = true;
+    userInteracted = true;
   } else {
     ytPlayer.pauseVideo();
     btn.innerHTML = '♪';
