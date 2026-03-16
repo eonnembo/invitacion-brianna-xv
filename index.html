@@ -531,11 +531,11 @@
 <!-- Botón música -->
 <button id="music-btn" onclick="toggleMusic()" title="Música de fondo">♪</button>
 
-<!-- Audio: Young and Beautiful - Lana Del Rey -->
-<audio id="bg-audio" loop preload="auto" crossorigin="anonymous">
-  <source src="https://ia800107.us.archive.org/32/items/LanaDelReyYoungAndBeautiful/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.mp3" type="audio/mpeg">
-  <source src="https://archive.org/download/LanaDelReyYoungAndBeautiful/Lana%20Del%20Rey%20-%20Young%20and%20Beautiful.mp3" type="audio/mpeg">
-</audio>
+<!-- YouTube Player oculto para música -->
+<div id="yt-player-wrapper" style="position:fixed;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;top:-9999px;left:-9999px;">
+  <div id="yt-player"></div>
+</div>
+<script src="https://www.youtube.com/iframe_api"></script>
 
 <!-- ═════════ HERO ═════════ -->
 <section class="hero">
@@ -847,39 +847,76 @@ function actualizarNombres(val) {
   }
 }
 
-// ── MÚSICA ──
+// ── MÚSICA YouTube IFrame API ──
+// Young and Beautiful - Lana Del Rey (video ID: owGykVbfgUE)
+let ytPlayer = null;
 let musicPlaying = false;
-const audio = document.getElementById('bg-audio');
-audio.volume = 0.5;
+let playerReady = false;
 
-// Mostrar tooltip si no carga
-audio.addEventListener('error', () => {
-  document.getElementById('music-btn').title = 'Audio no disponible offline — funcionará cuando esté en línea';
-});
+window.onYouTubeIframeAPIReady = function() {
+  ytPlayer = new YT.Player('yt-player', {
+    height: '1',
+    width: '1',
+    videoId: 'o_1aF54DO60',
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      loop: 1,
+      playlist: 'o_1aF54DO60',
+      playsinline: 1,
+      rel: 0,
+      modestbranding: 1
+    },
+    events: {
+      onReady: function(e) {
+        playerReady = true;
+        e.target.setVolume(50);
+      },
+      onStateChange: function(e) {
+        if (e.data === YT.PlayerState.ENDED) {
+          ytPlayer.seekTo(0);
+          ytPlayer.playVideo();
+        }
+      }
+    }
+  });
+};
 
 function toggleMusic() {
   const btn = document.getElementById('music-btn');
+  if (!playerReady) {
+    btn.textContent = '...';
+    setTimeout(() => toggleMusic(), 800);
+    return;
+  }
   if (!musicPlaying) {
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        btn.textContent = '⏸';
-        btn.classList.add('playing');
-        musicPlaying = true;
-      }).catch(() => {
-        btn.title = 'La música estará disponible cuando la invitación esté en línea 🎵';
-        btn.style.opacity = '0.5';
-      });
-    }
+    ytPlayer.playVideo();
+    btn.innerHTML = '⏸';
+    btn.classList.add('playing');
+    musicPlaying = true;
   } else {
-    audio.pause();
-    btn.textContent = '♪';
+    ytPlayer.pauseVideo();
+    btn.innerHTML = '♪';
     btn.classList.remove('playing');
     musicPlaying = false;
   }
 }
 
 // ── ENVIAR CONFIRMACIÓN ──
+// 📋 GOOGLE SHEETS: Seguí los pasos del instructivo para activar el guardado automático.
+// Una vez que tengas tu URL, reemplazá el valor de SHEETS_URL:
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzWmRH-8HkDNK5Qb0wy9Wu4t_7k3lrNWOHocR-RPotx-0EmffH-_ZYgHPDbD1bI35LY-w/exec';
+
+async function guardarEnSheets(datos) {
+  try {
+    const params = new URLSearchParams(datos).toString();
+    const url = SHEETS_URL + '?' + params;
+    // Usamos un img tag — funciona con no-cors sin errores
+    const img = new Image();
+    img.src = url;
+  } catch(e) { console.log('Sheets error:', e); }
+}
+
 function enviarConfirmacion() {
   const nombre    = document.getElementById('f-nombre').value.trim();
   const personas  = document.getElementById('f-personas').value;
@@ -904,8 +941,21 @@ function enviarConfirmacion() {
     if (inp && inp.value.trim()) nombresAcomp.push(inp.value.trim());
   }
 
-  // Números de WhatsApp
-  // Para agregar otro: descomentá la siguiente línea y reemplazá con el número
+  const datos = {
+    fecha: new Date().toLocaleString('es-AR'),
+    nombre,
+    personas,
+    acompanantes: nombresAcomp.join(', '),
+    asistencia: asistencia.value,
+    dieta,
+    mensaje
+  };
+
+  // 1️⃣ Guardar en Google Sheets
+  guardarEnSheets(datos);
+
+  // 2️⃣ Enviar por WhatsApp
+  // Para agregar otro número: descomentá la línea de abajo
   const NUMEROS_WA = [
     '541136884143',
     // '54XXXXXXXXXX',
@@ -916,15 +966,13 @@ function enviarConfirmacion() {
   texto += `👥 *Personas:* ${personas}\n`;
   if (nombresAcomp.length > 0) texto += `📋 *Acompañantes:* ${nombresAcomp.join(', ')}\n`;
   texto += `${asistencia.value}\n`;
-  if (dieta)   texto += `🍽️ *Restricción alimentaria:* ${dieta}\n`;
-  if (mensaje) texto += `💌 *Mensaje para Brianna:* ${mensaje}\n`;
+  if (dieta)   texto += `🍽️ *Restricción:* ${dieta}\n`;
+  if (mensaje) texto += `💌 *Mensaje:* ${mensaje}\n`;
   texto += `\n✨ ¡Hasta el 21 de agosto!`;
 
   const encoded = encodeURIComponent(texto);
   NUMEROS_WA.forEach((num, i) => {
-    setTimeout(() => {
-      window.open(`https://wa.me/${num}?text=${encoded}`, '_blank');
-    }, i * 700);
+    setTimeout(() => window.open(`https://wa.me/${num}?text=${encoded}`, '_blank'), i * 700);
   });
 
   document.getElementById('form-content').style.display = 'none';
