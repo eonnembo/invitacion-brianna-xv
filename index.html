@@ -848,10 +848,10 @@ function actualizarNombres(val) {
 }
 
 // ── MÚSICA YouTube IFrame API ──
-// Young and Beautiful - Lana Del Rey (video ID: owGykVbfgUE)
 let ytPlayer = null;
 let musicPlaying = false;
 let playerReady = false;
+let startedOnce = false;
 
 window.onYouTubeIframeAPIReady = function() {
   ytPlayer = new YT.Player('yt-player', {
@@ -871,10 +871,7 @@ window.onYouTubeIframeAPIReady = function() {
       onReady: function(e) {
         playerReady = true;
         e.target.setVolume(50);
-        e.target.playVideo();
-        document.getElementById('music-btn').innerHTML = '⏸';
-        document.getElementById('music-btn').classList.add('playing');
-        musicPlaying = true;
+        // No llamamos playVideo() acá — esperamos el primer toque del usuario
       },
       onStateChange: function(e) {
         if (e.data === YT.PlayerState.ENDED) {
@@ -885,6 +882,22 @@ window.onYouTubeIframeAPIReady = function() {
     }
   });
 };
+
+// Arranca la música en el primer toque/click del usuario en cualquier parte
+function iniciarMusicaAlTocar() {
+  if (startedOnce || !playerReady) return;
+  startedOnce = true;
+  ytPlayer.playVideo();
+  const btn = document.getElementById('music-btn');
+  btn.innerHTML = '⏸';
+  btn.classList.add('playing');
+  musicPlaying = true;
+  // Quitamos el listener una vez que arrancó
+  document.removeEventListener('touchstart', iniciarMusicaAlTocar);
+  document.removeEventListener('click', iniciarMusicaAlTocar);
+}
+document.addEventListener('touchstart', iniciarMusicaAlTocar, { once: true });
+document.addEventListener('click', iniciarMusicaAlTocar, { once: true });
 
 function toggleMusic() {
   const btn = document.getElementById('music-btn');
@@ -898,6 +911,7 @@ function toggleMusic() {
     btn.innerHTML = '⏸';
     btn.classList.add('playing');
     musicPlaying = true;
+    startedOnce = true;
   } else {
     ytPlayer.pauseVideo();
     btn.innerHTML = '♪';
