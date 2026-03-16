@@ -897,9 +897,10 @@ function arrancarMusica() {
 function onPrimeraInteraccion() {
   if (userInteracted) return;
   userInteracted = true;
-  document.removeEventListener('touchstart', onPrimeraInteraccion);
-  document.removeEventListener('scroll', onPrimeraInteraccion);
-  document.removeEventListener('click', onPrimeraInteraccion);
+  window.removeEventListener('touchstart', onPrimeraInteraccion);
+  window.removeEventListener('touchmove', onPrimeraInteraccion);
+  window.removeEventListener('scroll', onPrimeraInteraccion);
+  window.removeEventListener('click', onPrimeraInteraccion);
 
   if (playerReady) {
     arrancarMusica();
@@ -907,9 +908,10 @@ function onPrimeraInteraccion() {
   // Si no está listo todavía, onReady lo va a arrancar cuando cargue
 }
 
-document.addEventListener('touchstart', onPrimeraInteraccion, { passive: true });
-document.addEventListener('scroll', onPrimeraInteraccion, { passive: true });
-document.addEventListener('click', onPrimeraInteraccion);
+window.addEventListener('touchstart', onPrimeraInteraccion, { passive: true });
+window.addEventListener('touchmove', onPrimeraInteraccion, { passive: true });
+window.addEventListener('scroll', onPrimeraInteraccion, { passive: true });
+window.addEventListener('click', onPrimeraInteraccion);
 
 function toggleMusic() {
   const btn = document.getElementById('music-btn');
