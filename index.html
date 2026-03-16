@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XV Años · Brianna</title>
+
+<!-- OG Tags para que WhatsApp muestre una tarjeta preciosa -->
+<meta property="og:title" content="✨ Brianna cumple XV Años ✨">
+<meta property="og:description" content="21 de Agosto 2026 · 20:00 hs · Te esperamos para celebrar juntos 🌸">
+<meta property="og:image" content="https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?w=1200&h=630&fit=crop&q=80">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="✨ Brianna cumple XV Años ✨">
+<meta name="twitter:description" content="21 de Agosto 2026 · 20:00 hs · Te esperamos para celebrar juntos 🌸">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?w=1200&h=630&fit=crop&q=80">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #faf8f3;
+    --cream2: #f3ede0;
+    --champagne: #e8d9c0;
+    --gold: #b8935a;
+    --gold-light: #d4a96a;
+    --gold-pale: #e8c98a22;
+    --text-dark: #1e160a;
+    --text-mid: #5c4430;
+    --text-light: #9a7a5a;
+    --white: #ffffff;
+    --shadow: 0 8px 40px rgba(100,70,30,0.12);
+    --shadow-sm: 0 2px 16px rgba(100,70,30,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--text-dark);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── PARTÍCULAS ─── */
+  #particles {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .petal {
+    position: absolute;
+    border-radius: 50% 0 50% 0;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(-30px) rotate(0deg) scale(1); opacity: 0; }
+    10%  { opacity: 0.5; }
+    85%  { opacity: 0.3; }
+    100% { transform: translateY(105vh) rotate(600deg) scale(0.5); opacity: 0; }
+  }
+
+  /* ─── ANIMACIONES ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.5; } 50% { opacity: 1; }
+  }
+  @keyframes countDown {
+    from { transform: scale(0.8); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 28px 60px;
+    background: linear-gradient(165deg, #fdfbf6 0%, #f5ead5 45%, #eddfc8 100%);
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 55% 35% at 15% 25%, rgba(184,147,90,0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 55% at 85% 75%, rgba(232,217,192,0.22) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Ornamentos de esquina */
+  .corner {
+    position: absolute;
+    width: 90px; height: 90px;
+    opacity: 0.3;
+  }
+  .corner svg { width: 100%; height: 100%; }
+  .corner-tl { top: 20px; left: 20px; }
+  .corner-tr { top: 20px; right: 20px; transform: scaleX(-1); }
+  .corner-bl { bottom: 20px; left: 20px; transform: scaleY(-1); }
+  .corner-br { bottom: 20px; right: 20px; transform: scale(-1); }
+
+  .pre-title {
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+
+  .name-container {
+    position: relative;
+    animation: fadeUp 1.1s ease 0.5s both;
+  }
+
+  .name-main {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(72px, 18vw, 130px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-dark);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+
+  .name-xv {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(14px, 3.5vw, 22px);
+    font-weight: 300;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 10px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 28px auto;
+    width: 260px;
+    animation: fadeIn 1s ease 0.8s both;
+  }
+  .divider-line-el {
+    flex: 1; height: 1px;
+    background: linear-gradient(to right, transparent, var(--champagne), transparent);
+  }
+  .divider-diamond {
+    width: 7px; height: 7px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .hero-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 4vw, 26px);
+    font-weight: 400;
+    color: var(--text-mid);
+    letter-spacing: 0.06em;
+    animation: fadeUp 1s ease 1s both;
+  }
+
+  .hero-sub {
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: var(--text-light);
+    margin-top: 8px;
+    text-transform: uppercase;
+    animation: fadeUp 1s ease 1.1s both;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-light);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    animation: fadeIn 2s ease 2s both;
+  }
+  .scroll-arrow {
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(to bottom, var(--champagne), transparent);
+    animation: shimmer 2s ease infinite;
+  }
+
+  /* ─── COUNTDOWN ─── */
+  .countdown-section {
+    background: var(--text-dark);
+    color: var(--cream);
+    padding: 60px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .countdown-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(184,147,90,0.08) 0%, transparent 70%);
+  }
+  .countdown-label {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: clamp(16px, 5vw, 48px);
+  }
+  .countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .countdown-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(44px, 12vw, 72px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+    min-width: 70px;
+  }
+  .countdown-unit {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+  }
+  .countdown-sep {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 9vw, 56px);
+    color: var(--gold);
+    opacity: 0.4;
+    align-self: flex-start;
+    margin-top: 6px;
+    animation: shimmer 1s ease infinite;
+  }
+
+  /* ─── SECCIONES ─── */
+  .section {
+    padding: 80px 28px;
+    max-width: 680px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-tag {
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 7vw, 44px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text-dark);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+
+  .section-body {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.8;
+  }
+
+  /* ─── INFO CARDS ─── */
+  .info-card {
+    background: var(--white);
+    border: 1px solid var(--champagne);
+    border-radius: 2px;
+    padding: 28px 32px;
+    margin-top: 24px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .info-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 32px; right: 32px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--cream2);
+  }
+  .info-row:last-child { border-bottom: none; }
+
+  .info-icon {
+    width: 36px; height: 36px;
+    background: var(--cream2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .info-content { flex: 1; }
+  .info-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-light);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .info-value {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text-dark);
+  }
+  .info-note {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  /* ─── DRESS CODE ─── */
+  .dresscode-section {
+    background: var(--white);
+    border-top: 1px solid var(--champagne);
+    border-bottom: 1px solid var(--champagne);
+  }
+  .dresscode-section .section { padding-top: 70px; padding-bottom: 70px; }
+
+  .palette {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .palette-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .swatch-color {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--champagne);
+  }
+  .swatch-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    text-align: center;
+  }
+
+  .tip-box {
+    background: linear-gradient(135deg, #fdf9f2, #f7edd8);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 4px 4px 0;
+    padding: 16px 20px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  /* ─── REGALO ─── */
+  .gift-section {
+    background: linear-gradient(160deg, #1e160a 0%, #2e1f0e 100%);
+    color: var(--cream);
+    padding: 80px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .gift-section::after {
+    content: '♦';
+    position: absolute;
+    font-size: 300px;
+    color: rgba(184,147,90,0.04);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .gift-section .section-title { color: var(--cream); }
+  .gift-section .section-body { color: rgba(250,248,243,0.65); }
+
+  .alias-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(184,147,90,0.35);
+    border-radius: 4px;
+    padding: 18px 28px;
+    margin-top: 28px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .alias-box:hover {
+    background: rgba(184,147,90,0.12);
+    border-color: var(--gold);
+  }
+  .alias-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--cream);
+    letter-spacing: 0.05em;
+  }
+  .alias-copy {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+  }
+  .copy-toast {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-top: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .copy-toast.show { opacity: 1; }
+
+  /* ─── CONFIRMACIÓN ─── */
+  .confirm-section {
+    padding: 80px 28px;
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+    z-index: 1;
+    position: relative;
+  }
+
+  .confirm-form {
+    background: var(--white);
+    border: 1px solid var(--champagne);
+    border-radius: 2px;
+    padding: 40px 32px;
+    margin-top: 32px;
+    box-shadow: var(--shadow);
+    text-align: left;
+    position: relative;
+  }
+  .confirm-form::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 40px; right: 40px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .form-group {
+    margin-bottom: 22px;
+  }
+  .form-label {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--text-light);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid var(--champagne);
+    border-radius: 2px;
+    background: var(--cream);
+    color: var(--text-dark);
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.2s ease;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--gold);
+    background: var(--white);
+  }
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  .radio-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .radio-option {
+    flex: 1;
+    min-width: 120px;
+    position: relative;
+  }
+  .radio-option input { display: none; }
+  .radio-label {
+    display: block;
+    padding: 12px 16px;
+    border: 1px solid var(--champagne);
+    border-radius: 2px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--cream);
+  }
+  .radio-option input:checked + .radio-label {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+    color: var(--gold);
+  }
+  .radio-label:hover { border-color: var(--gold-light); }
+
+  .btn-confirm {
+    width: 100%;
+    padding: 18px;
+    background: var(--text-dark);
+    color: var(--cream);
+    border: none;
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .btn-confirm::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(184,147,90,0.15) 100%);
+    transition: opacity 0.3s;
+  }
+  .btn-confirm:hover { background: #2e1f0e; letter-spacing: 0.45em; }
+  .btn-confirm:active { transform: scale(0.99); }
+
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 32px 20px;
+  }
+  .success-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .success-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-style: italic;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+  }
+  .success-sub { font-size: 14px; color: var(--text-light); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--text-dark);
+    color: var(--text-light);
+    text-align: center;
+    padding: 50px 28px;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    z-index: 1;
+    position: relative;
+  }
+  footer .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  /* ─── SEPARADOR DECORATIVO ─── */
+  .ornament-sep {
+    text-align: center;
+    color: var(--champagne);
+    font-size: 20px;
+    letter-spacing: 12px;
+    padding: 10px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── MAPA LINK ─── */
+  .map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin-top: 14px;
+    padding: 10px 20px;
+    border: 1px solid var(--champagne);
+    border-radius: 2px;
+    transition: all 0.2s ease;
+    background: var(--cream);
+  }
+  .map-link:hover { background: var(--white); border-color: var(--gold); }
+
+  @media (max-width: 480px) {
+    .info-card { padding: 24px 20px; }
+    .confirm-form { padding: 32px 20px; }
+    .countdown-grid { gap: 10px; }
+    .countdown-num { min-width: 52px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Partículas -->
+<div id="particles"></div>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <!-- Esquinas decorativas -->
+  <div class="corner corner-tl">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 90 L10 10 L90 10" stroke="#b8935a" stroke-width="1.5" fill="none"/>
+      <path d="M20 80 L20 20 L80 20" stroke="#b8935a" stroke-width="0.5" fill="none" opacity="0.5"/>
+      <circle cx="10" cy="10" r="4" fill="#b8935a" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="corner corner-tr">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 90 L10 10 L90 10" stroke="#b8935a" stroke-width="1.5" fill="none"/>
+      <path d="M20 80 L20 20 L80 20" stroke="#b8935a" stroke-width="0.5" fill="none" opacity="0.5"/>
+      <circle cx="10" cy="10" r="4" fill="#b8935a" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="corner corner-bl">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 90 L10 10 L90 10" stroke="#b8935a" stroke-width="1.5" fill="none"/>
+      <path d="M20 80 L20 20 L80 20" stroke="#b8935a" stroke-width="0.5" fill="none" opacity="0.5"/>
+      <circle cx="10" cy="10" r="4" fill="#b8935a" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="corner corner-br">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 90 L10 10 L90 10" stroke="#b8935a" stroke-width="1.5" fill="none"/>
+      <path d="M20 80 L20 20 L80 20" stroke="#b8935a" stroke-width="0.5" fill="none" opacity="0.5"/>
+      <circle cx="10" cy="10" r="4" fill="#b8935a" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <span class="pre-title">Tengo el honor de invitarte</span>
+
+  <div class="name-container">
+    <div class="name-main">Brianna</div>
+    <span class="name-xv">cumple sus XV años</span>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line-el"></div>
+    <div class="divider-diamond"></div>
+    <div class="divider-line-el"></div>
+  </div>
+
+  <div class="hero-date">21 de Agosto · 2026</div>
+  <div class="hero-sub">A partir de las 20:00 hs</div>
+
+  <div class="scroll-hint">
+    <span>Ver invitación</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ═══════════ COUNTDOWN ═══════════ -->
+<div class="countdown-section">
+  <div class="countdown-label">Faltan</div>
+  <div class="countdown-grid">
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-dias">--</span>
+      <span class="countdown-unit">Días</span>
+    </div>
+    <div class="countdown-sep">:</div>
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-horas">--</span>
+      <span class="countdown-unit">Horas</span>
+    </div>
+    <div class="countdown-sep">:</div>
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-mins">--</span>
+      <span class="countdown-unit">Minutos</span>
+    </div>
+    <div class="countdown-sep">:</div>
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-segs">--</span>
+      <span class="countdown-unit">Segundos</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ LUGAR Y FECHA ═══════════ -->
+<div class="section reveal">
+  <span class="section-tag">Dónde & cuándo</span>
+  <h2 class="section-title">La celebración</h2>
+  <p class="section-body">Acompañanos a festejar esta noche tan especial. Te esperamos con los brazos abiertos para compartir momentos que quedarán en la memoria para siempre.</p>
+
+  <div class="info-card">
+    <div class="info-row">
+      <div class="info-icon">📅</div>
+      <div class="info-content">
+        <div class="info-label">Fecha</div>
+        <div class="info-value">Viernes 21 de Agosto de 2026</div>
+      </div>
+    </div>
+    <div class="info-row">
+      <div class="info-icon">🕗</div>
+      <div class="info-content">
+        <div class="info-label">Horario</div>
+        <div class="info-value">20:00 hs</div>
+        <div class="info-note">La noche comienza puntual 🌙</div>
+      </div>
+    </div>
+    <div class="info-row">
+      <div class="info-icon">📍</div>
+      <div class="info-content">
+        <div class="info-label">Salón</div>
+        <div class="info-value">Janos Liniers</div>
+        <div class="info-note">Av. Larrazábal 557 · CABA</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center">
+    <a class="map-link" href="https://maps.app.goo.gl/n4boTdWYGKaXZvrc7" target="_blank">
+      🗺️ &nbsp;Cómo llegar
+    </a>
+  </div>
+</div>
+
+<div class="ornament-sep">◇ ◆ ◇</div>
+
+<!-- ═══════════ DRESS CODE ═══════════ -->
+<div class="dresscode-section">
+  <div class="section reveal">
+    <span class="section-tag">Vestimenta</span>
+    <h2 class="section-title">Elegante sport</h2>
+    <p class="section-body">La noche merece que brilles. El dress code es <strong style="font-weight:500;color:var(--text-dark)">elegante sport</strong>: looks sofisticados con un toque moderno y cómodo. Saquetes, pantalones de vestir, vestidos y conjuntos midi son perfectos.</p>
+
+    <div class="tip-box">
+      ✨ &nbsp;Para esta noche tan especial, te pedimos que reserves el blanco para la protagonista del festejo. ¡Gracias por acompañar a Brianna en su noche más soñada!
+    </div>
+
+    <div style="margin-top:28px">
+      <div style="font-size:11px;letter-spacing:0.3em;color:var(--text-light);text-transform:uppercase;margin-bottom:16px">Paleta sugerida</div>
+      <div class="palette">
+        <div class="palette-swatch">
+          <div class="swatch-color" style="background:#f5c2c7;"></div>
+          <span class="swatch-label">Nude<br>rosado</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="swatch-color" style="background:#c8b89a;"></div>
+          <span class="swatch-label">Camello<br>arena</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="swatch-color" style="background:#7a8e7c;"></div>
+          <span class="swatch-label">Verde<br>salvia</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="swatch-color" style="background:#5c6b8a;"></div>
+          <span class="swatch-label">Azul<br>pizarra</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="swatch-color" style="background:#b8935a;"></div>
+          <span class="swatch-label">Dorado<br>cobre</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="swatch-color" style="background:#2c2218;border:1px solid #ccc;"></div>
+          <span class="swatch-label">Negro<br>clásico</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ REGALO ═══════════ -->
+<div class="gift-section">
+  <div style="max-width:600px;margin:0 auto;position:relative;z-index:1">
+    <span class="section-tag" style="color:var(--gold-light)">El mejor detalle</span>
+    <h2 class="section-title" style="color:var(--cream)">Tu regalo</h2>
+    <p class="section-body" style="color:rgba(250,248,243,0.65)">Si querés hacerme un regalo, el que más me haría feliz es ayudarme a cumplir mis sueños. Podés enviar tu regalo con el alias de Mercado Pago 💛</p>
+
+    <div id="alias-box" class="alias-box" onclick="copyAlias()">
+      <div>
+        <div style="font-size:11px;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;margin-bottom:6px">Alias Mercado Pago</div>
+        <div class="alias-text">brianna.onnembo.mp</div>
+      </div>
+      <div class="alias-copy">Copiar ↗</div>
+    </div>
+
+    <div id="copy-toast" class="copy-toast">¡Alias copiado! ✓</div>
+  </div>
+</div>
+
+<!-- ═══════════ CONFIRMACIÓN ═══════════ -->
+<div class="confirm-section">
+  <span class="section-tag">Antes del 10 de agosto</span>
+  <h2 class="section-title" style="text-align:center">Confirmá tu asistencia</h2>
+  <p class="section-body" style="text-align:center">Para poder preparar todo con amor, necesitamos saber si vas a estar. ¡Tu confirmación es el primer paso para esta noche inolvidable!</p>
+
+  <div class="confirm-form">
+    <div id="form-content">
+      <div class="form-group">
+        <label class="form-label">Tu nombre completo *</label>
+        <input class="form-input" id="f-nombre" type="text" placeholder="Como figura en tu DNI 😊" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Cuántos asisten? *</label>
+        <select class="form-select" id="f-personas">
+          <option value="">Seleccioná</option>
+          <option value="1">Solo yo (1 persona)</option>
+          <option value="2">2 personas</option>
+          <option value="3">3 personas</option>
+          <option value="4">4 personas</option>
+          <option value="5">5 o más</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Asistís? *</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" name="asistencia" id="r-si" value="✅ Confirmo asistencia">
+            <label class="radio-label" for="r-si">✅ ¡Voy!</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" name="asistencia" id="r-no" value="❌ No puedo asistir">
+            <label class="radio-label" for="r-no">😔 No puedo</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" name="asistencia" id="r-quiza" value="🤔 Tal vez">
+            <label class="radio-label" for="r-quiza">🤔 Tal vez</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Tenés alguna restricción alimentaria?</label>
+        <input class="form-input" id="f-dieta" type="text" placeholder="Ej: vegetariano, celiaco, sin gluten...">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Querés dejarle un mensaje a Brianna?</label>
+        <textarea class="form-textarea" id="f-mensaje" placeholder="Un deseo, una canción pedida, lo que quieras... 💌"></textarea>
+      </div>
+
+      <button class="btn-confirm" onclick="enviarConfirmacion()">
+        Confirmar asistencia
+      </button>
+    </div>
+
+    <div class="success-msg" id="success-msg">
+      <span class="success-icon">🌸</span>
+      <div class="success-title">¡Gracias, nos vemos pronto!</div>
+      <p class="success-sub">Tu confirmación fue enviada. <br>Brianna y su familia te esperan con mucho amor 💛</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <span class="footer-name">Brianna</span>
+  <div style="margin-bottom:8px;color:rgba(154,122,90,0.6);font-size:18px;letter-spacing:8px">◆ ◆ ◆</div>
+  21 · 08 · 2026 &nbsp;·&nbsp; Con amor, la familia Onnembo
+</footer>
+
+<script>
+// ── PARTÍCULAS ──
+(function() {
+  const container = document.getElementById('particles');
+  const colors = ['#e8d9c0','#d4a96a','#c9a96e','#f0e4cc','#b8935a'];
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const size = Math.random() * 8 + 4;
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      width: ${size}px; height: ${size}px;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      animation-duration: ${Math.random() * 12 + 8}s;
+      animation-delay: ${Math.random() * 10}s;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ── COUNTDOWN ──
+function updateCountdown() {
+  const target = new Date('2026-08-21T20:00:00-03:00').getTime();
+  const now    = Date.now();
+  const diff   = Math.max(0, target - now);
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-dias').textContent  = String(d).padStart(2,'0');
+  document.getElementById('cd-horas').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
+  document.getElementById('cd-segs').textContent  = String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── REVEAL ON SCROLL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── COPIAR ALIAS ──
+function copyAlias() {
+  navigator.clipboard.writeText('brianna.onnembo.mp').then(() => {
+    const toast = document.getElementById('copy-toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  });
+}
+
+// ── ENVIAR CONFIRMACIÓN POR WHATSAPP ──
+function enviarConfirmacion() {
+  const nombre    = document.getElementById('f-nombre').value.trim();
+  const personas  = document.getElementById('f-personas').value;
+  const asistencia = document.querySelector('input[name="asistencia"]:checked');
+  const dieta     = document.getElementById('f-dieta').value.trim();
+  const mensaje   = document.getElementById('f-mensaje').value.trim();
+
+  if (!nombre) { alert('Por favor ingresá tu nombre 😊'); return; }
+  if (!personas) { alert('Por favor indicá cuántas personas asisten 😊'); return; }
+  if (!asistencia) { alert('Por favor indicá si vas a asistir 😊'); return; }
+
+  // ── Número de WhatsApp de la organizadora ──
+  // Para agregar otro número, duplicá la línea y mandá el mensaje a ambos:
+  const NUMEROS_WA = [
+    '541136884143',   // Número principal
+    // '54XXXXXXXXXX', // ← Descomentá y poné el segundo número acá cuando lo tengas
+  ];
+
+  let texto = `🌸 *Confirmación para los XV de Brianna* 🌸\n\n`;
+  texto += `👤 *Nombre:* ${nombre}\n`;
+  texto += `👥 *Personas:* ${personas}\n`;
+  texto += `${asistencia.value}\n`;
+  if (dieta) texto += `🍽️ *Dieta:* ${dieta}\n`;
+  if (mensaje) texto += `💌 *Mensaje para Brianna:* ${mensaje}\n`;
+  texto += `\n✨ ¡Hasta el 21 de agosto!`;
+
+  const encoded = encodeURIComponent(texto);
+
+  // Abre WhatsApp para cada número
+  NUMEROS_WA.forEach((num, i) => {
+    setTimeout(() => {
+      window.open(`https://wa.me/${num}?text=${encoded}`, '_blank');
+    }, i * 800); // pequeño delay entre cada apertura
+  });
+
+  // Mostrar mensaje de éxito
+  document.getElementById('form-content').style.display = 'none';
+  document.getElementById('success-msg').style.display  = 'block';
+}
+</script>
+</body>
+</html>
