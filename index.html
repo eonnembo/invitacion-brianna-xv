@@ -7,14 +7,14 @@
 
 <meta property="og:title" content="✨ Brianna cumple XV Años ✨">
 <meta property="og:description" content="21 de Agosto 2026 · 20:00 hs · Te esperamos para celebrar juntos 🌸">
-<meta property="og:image" content="https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?w=1200&h=630&fit=crop&q=80">
+<meta property="og:image" content="og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="✨ Brianna cumple XV Años ✨">
 <meta name="twitter:description" content="21 de Agosto 2026 · 20:00 hs · Te esperamos para celebrar juntos 🌸">
-<meta name="twitter:image" content="https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?w=1200&h=630&fit=crop&q=80">
+<meta name="twitter:image" content="og-image.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
@@ -576,6 +576,47 @@
   text-transform: uppercase;
 }
 
+  /* ── FOTOS ── */
+  .photos-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--white);
+    border: 1px solid var(--blush-light);
+    border-radius: 4px;
+    padding: 22px 24px;
+    margin: 28px auto 0;
+    max-width: 420px;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .photos-btn::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(to right, var(--blush), var(--rose), var(--blush));
+  }
+  .photos-btn:hover {
+    border-color: var(--rose);
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+  }
+  .photos-btn-icon { font-size: 28px; flex-shrink: 0; }
+  .photos-btn-title {
+    font-size: 15px; font-weight: 500;
+    color: var(--ink); margin-bottom: 3px; text-align: left;
+  }
+  .photos-btn-sub {
+    font-size: 11px; letter-spacing: 0.1em;
+    color: var(--ink-soft); text-align: left;
+  }
+  .photos-btn-arrow {
+    font-size: 20px; color: var(--rose);
+    margin-left: auto; flex-shrink: 0;
+  }
+
   @media (max-width:480px) {
     .info-card { padding: 22px 18px; }
     .confirm-form { padding: 30px 18px; }
@@ -760,6 +801,28 @@
     <div id="copy-toast" class="copy-toast">¡Alias copiado! ✓</div>
   </div>
 </div>
+
+<!-- ═════════ FOTOS ═════════ -->
+<div class="section reveal" style="text-align:center">
+  <span class="section-tag">Recuerdos para siempre</span>
+  <h2 class="section-title">Compartí tus fotos y videos</h2>
+  <p class="section-body" style="text-align:center">¿Sacaste alguna foto o video en la fiesta? ¡Subílos al álbum compartido! Todos los recuerdos de esta noche quedarán guardados juntos 📸🎉</p>
+
+  <a href="https://photos.app.goo.gl/MZpSZqagbt8Se1Es6" target="_blank" class="photos-btn">
+    <span class="photos-btn-icon">📷</span>
+    <div>
+      <div class="photos-btn-title">Subir fotos y videos</div>
+      <div class="photos-btn-sub">Álbum compartido de Google Photos</div>
+    </div>
+    <span class="photos-btn-arrow">↗</span>
+  </a>
+
+  <p style="font-size:12px;color:var(--ink-soft);margin-top:20px;font-style:italic;letter-spacing:0.05em">
+    No necesitás cuenta de Google para ver el álbum · Las fotos las puede ver toda la familia 🌸
+  </p>
+</div>
+
+<div class="ornament-sep">◇ ◆ ◇</div>
 
 <!-- ═════════ CONFIRMACIÓN ═════════ -->
 <div class="confirm-section">
