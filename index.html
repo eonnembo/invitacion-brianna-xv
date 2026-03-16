@@ -871,6 +871,10 @@ window.onYouTubeIframeAPIReady = function() {
       onReady: function(e) {
         playerReady = true;
         e.target.setVolume(50);
+        e.target.playVideo();
+        document.getElementById('music-btn').innerHTML = '⏸';
+        document.getElementById('music-btn').classList.add('playing');
+        musicPlaying = true;
       },
       onStateChange: function(e) {
         if (e.data === YT.PlayerState.ENDED) {
