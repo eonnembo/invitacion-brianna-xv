@@ -208,7 +208,7 @@ body{
   transition:all .3s ease;
 }
 #music-btn:hover{transform:scale(1.08);}
-#music-btn.playing{border-color:var(--champ2);color:var(--champ2);animation:gold-glow 2.5s ease-in-out infinite;}
+#music-btn.playing{border-color:var(--champ2);animation:gold-glow 2.5s ease-in-out infinite;}
 
 /* ══════════════════════════════
    HERO
@@ -530,7 +530,7 @@ footer .footer-name{
 
 <canvas id="star-canvas"></canvas>
 <div id="particles"></div>
-<button id="music-btn" onclick="toggleMusic()" title="Música">♪</button>
+<button id="music-btn" onclick="toggleMusic()" title="Música"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6 4L14 9L6 14V4Z" fill="#e8a8bc"/></svg></button>
 <div style="position:fixed;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;top:-9999px;"><div id="yt-player"></div></div>
 <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -839,7 +839,7 @@ function cerrarOverlay(){
   const arrancar=()=>{
     if(playerReady){
       ytPlayer.playVideo();
-      document.getElementById('music-btn').innerHTML='⏸';
+      document.getElementById('music-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="4" y="3" width="3.5" height="12" rx="1" fill="#e8a8bc"/><rect x="10.5" y="3" width="3.5" height="12" rx="1" fill="#e8a8bc"/></svg>';
       document.getElementById('music-btn').classList.add('playing');
       musicPlaying=true;
     }else{setTimeout(arrancar,200);}
@@ -849,8 +849,8 @@ function cerrarOverlay(){
 function toggleMusic(){
   const btn=document.getElementById('music-btn');
   if(!playerReady)return;
-  if(!musicPlaying){ytPlayer.playVideo();btn.innerHTML='⏸';btn.classList.add('playing');musicPlaying=true;}
-  else{ytPlayer.pauseVideo();btn.innerHTML='♪';btn.classList.remove('playing');musicPlaying=false;}
+  if(!musicPlaying){ytPlayer.playVideo();btn.innerHTML='<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="4" y="3" width="3.5" height="12" rx="1" fill="#e8a8bc"/><rect x="10.5" y="3" width="3.5" height="12" rx="1" fill="#e8a8bc"/></svg>';btn.classList.add('playing');musicPlaying=true;}
+  else{ytPlayer.pauseVideo();btn.innerHTML='<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6 4L14 9L6 14V4Z" fill="#e8a8bc"/></svg>';btn.classList.remove('playing');musicPlaying=false;}
 }
 
 // ── CONFIRMACIÓN ──
