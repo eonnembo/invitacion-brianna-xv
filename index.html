@@ -458,12 +458,18 @@ body{
 .radio-option{flex:1;min-width:130px;position:relative;}
 .radio-option input{display:none;}
 .radio-label{
-  display:block;padding:13px 16px;border:1px solid var(--champ);border-radius:2px;
-  text-align:center;font-size:13px;color:var(--ink-mid);cursor:pointer;
-  transition:all .2s;background:var(--cream);
+  display:block;padding:14px 16px;border:1.5px solid var(--champ);border-radius:4px;
+  text-align:center;font-size:14px;color:var(--ink-mid);cursor:pointer;
+  transition:all .25s;background:var(--cream);font-weight:400;
 }
-.radio-option input:checked+.radio-label{border-color:var(--gold);background:rgba(200,164,90,.1);color:var(--ink);}
-.radio-label:hover{border-color:var(--gold);}
+.radio-option input:checked+.radio-label{
+  border-color:var(--rose);border-width:2px;
+  background:linear-gradient(135deg,#fdeef4,#f5d6e0);
+  color:var(--ink);font-weight:600;
+  box-shadow:0 4px 16px rgba(232,168,188,.35);
+  transform:translateY(-2px);
+}
+.radio-label:hover{border-color:var(--rose);}
 #extra-nombres{display:none;}
 .nombres-extra-input{
   width:100%;padding:11px 16px;margin-bottom:10px;border:1px solid var(--champ);
@@ -761,7 +767,7 @@ footer .footer-name{
       <div class="form-group"><label class="form-label">¿Tenés alguna restricción alimentaria?</label><input class="form-input" id="f-dieta" type="text" placeholder="Ej: vegetariano, celíaco, sin TACC..."></div>
       <div class="form-group"><label class="form-label">¿Querés dejarle un mensaje a Brianna?</label><textarea class="form-textarea" id="f-mensaje" placeholder="Un deseo, unas palabras lindas, lo que quieras... 💌"></textarea></div>
       <div class="form-group"><label class="form-label">🎵 ¿Qué tema no puede faltar en la fiesta?</label><input class="form-input" id="f-cancion" type="text" placeholder="Tu canción para romper la pista 💃"></div>
-      <button class="btn-confirm" onclick="enviarConfirmacion()">Confirmar asistencia</button>
+      <button class="btn-confirm" onclick="enviarConfirmacion()">Enviar</button>
     </div>
     <div class="success-msg" id="success-msg">
       <span class="success-icon"><svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -955,17 +961,17 @@ function actualizarNombres(val){
   container.innerHTML='';
   if(cantExtra>0){
     wrapper.style.display='block';
-    for(let i=1;i<=Math.min(cantExtra,5);i++){
-      const inp=document.createElement('input');
-      inp.type='text';inp.className='nombres-extra-input';
-      inp.id=`f-acomp-${i}`;inp.placeholder=`Nombre del acompañante ${i}`;
-      container.appendChild(inp);
-    }
-    if(cantExtra>=5){
-      const inp=document.createElement('input');
-      inp.type='text';inp.className='nombres-extra-input';
-      inp.placeholder='Nombres de los acompañantes (separados por coma)';
-      inp.id='f-acomp-multi';container.appendChild(inp);
+    for(let i=1;i<=cantExtra;i++){
+      const fila=document.createElement('div');
+      fila.style.cssText='display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;';
+      const inpN=document.createElement('input');
+      inpN.type='text';inpN.className='nombres-extra-input';inpN.style.cssText='flex:1;min-width:120px;margin-bottom:0;';
+      inpN.id=`f-acomp-nombre-${i}`;inpN.placeholder=`Nombre acompañante ${i}`;
+      const inpA=document.createElement('input');
+      inpA.type='text';inpA.className='nombres-extra-input';inpA.style.cssText='flex:1;min-width:120px;margin-bottom:0;';
+      inpA.id=`f-acomp-apellido-${i}`;inpA.placeholder=`Apellido acompañante ${i}`;
+      fila.appendChild(inpN);fila.appendChild(inpA);
+      container.appendChild(fila);
     }
   }else{wrapper.style.display='none';}
 }
@@ -1024,8 +1030,16 @@ function enviarConfirmacion(){
   if(!asistencia){alert('Por favor indicá si vas a asistir 😊');return;}
   const cantExtra=parseInt(personas)-1;
   let nombresAcomp=[];
-  if(cantExtra>0&&cantExtra<6){for(let i=1;i<=cantExtra;i++){const inp=document.getElementById(`f-acomp-${i}`);if(inp&&inp.value.trim())nombresAcomp.push(inp.value.trim());}}
-  else if(cantExtra>=5){const inp=document.getElementById('f-acomp-multi');if(inp&&inp.value.trim())nombresAcomp.push(inp.value.trim());}
+  if(cantExtra>0){
+    for(let i=1;i<=cantExtra;i++){
+      const inpN=document.getElementById(`f-acomp-nombre-${i}`);
+      const inpA=document.getElementById(`f-acomp-apellido-${i}`);
+      const n=inpN?inpN.value.trim():'';
+      const a=inpA?inpA.value.trim():'';
+      if(!n||!a){alert(`Por favor completá nombre y apellido del acompañante ${i} 😊`);return;}
+      nombresAcomp.push(`${n} ${a}`);
+    }
+  }
   // Guardar en Sheets (silencioso)
   const datosConfirm = {fecha:new Date().toLocaleString('es-AR'),nombre,apellido,personas,acompanantes:nombresAcomp.join(', '),asistencia:asistencia.value,dieta,mensaje,cancion};
   guardarEnSheets(datosConfirm);

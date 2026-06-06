@@ -35,12 +35,12 @@ textarea,input[type=text]{width:100%;padding:12px 16px;border:1px solid var(--ch
 textarea:focus,input:focus{border-color:var(--rose);background:var(--white);}
 textarea{min-height:90px;resize:vertical;}
 
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border:none;border-radius:4px;font-family:'Raleway',sans-serif;font-size:13px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;min-height:44px;box-sizing:border-box;border:none;border-radius:4px;font-family:'Raleway',sans-serif;font-size:13px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .3s;line-height:1;vertical-align:middle;}
 .btn-primary{background:var(--ink);color:var(--white);}
 .btn-primary:hover{background:#4a2a38;box-shadow:0 4px 16px rgba(42,26,34,.25);}
 .btn-rose{background:var(--rose);color:var(--white);}
 .btn-rose:hover{background:var(--ink);color:var(--white);}
-.btn-sm{padding:8px 16px;font-size:11px;}
+.btn-sm{padding:8px 16px;font-size:11px;min-height:36px;}
 .btn-green{background:var(--green);color:var(--white);}
 .btn-ghost{background:transparent;border:1px solid var(--champ);color:var(--ink-soft);}
 .btn-ghost:hover{border-color:var(--rose);color:var(--rose);}
@@ -58,7 +58,11 @@ td{padding:11px 12px;vertical-align:middle;}
 .badge-sent{background:#e8f5e9;color:var(--green);border:1px solid #a8d8a8;}
 .badge-skip{background:#fafafa;color:#999;border:1px solid #ddd;}
 
-.action-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.btn input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;}
+.btn-file{position:relative;}
+.action-btns{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.action-btns .btn{min-width:90px;}
+.action-btns .btn-x{min-width:36px;width:36px;padding:8px;}
 
 /* MENSAJE PREVIEW */
 .msg-preview{background:var(--cream);border-left:3px solid var(--rose);border-radius:0 6px 6px 0;padding:14px 16px;font-size:13px;line-height:1.7;color:var(--ink-mid);white-space:pre-wrap;margin-top:12px;}
@@ -100,7 +104,7 @@ td{padding:11px 12px;vertical-align:middle;}
     <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:12px">📊 Opción 1: Desde Excel (recomendado)</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn btn-rose btn-sm" onclick="descargarPlantilla()">⬇ Descargar plantilla Excel</button>
-      <label class="btn btn-primary btn-sm" style="cursor:pointer">
+      <label class="btn btn-primary btn-sm btn-file" style="cursor:pointer">
         📂 Subir Excel completo
         <input type="file" id="excel-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="importarExcel(event)">
       </label>
@@ -133,7 +137,7 @@ td{padding:11px 12px;vertical-align:middle;}
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap">
     <button class="btn btn-green" onclick="descargarRespaldo()">💾 Descargar respaldo</button>
-    <label class="btn btn-ghost" style="cursor:pointer">
+    <label class="btn btn-ghost btn-file" style="cursor:pointer">
       📂 Restaurar respaldo
       <input type="file" id="restore-file" accept=".json" style="display:none" onchange="restaurarRespaldo(event)">
     </label>
@@ -304,7 +308,7 @@ function renderTabla() {
           ${c.estado!=='enviado'?`<button class="btn btn-green btn-sm" onclick="enviarUno('${c.id}')">📲 Enviar</button>`:''}
           ${c.estado==='pendiente'?`<button class="btn btn-ghost btn-sm" onclick="marcarEstado('${c.id}','omitido')">Omitir</button>`:''}
           ${c.estado!=='pendiente'?`<button class="btn btn-ghost btn-sm" onclick="marcarEstado('${c.id}','pendiente')">↩ Revertir</button>`:''}
-          <button class="btn btn-ghost btn-sm" onclick="eliminar('${c.id}')" style="color:var(--red)">✕</button>
+          <button class="btn btn-ghost btn-sm btn-x" onclick="eliminar('${c.id}')" style="color:var(--red)">✕</button>
         </div>
       </td>
     </tr>
@@ -409,6 +413,18 @@ function renderConfirmaciones(lista) {
   const tbody = document.getElementById('conf-body');
   const empty = document.getElementById('conf-empty');
 
+  // Stats — siempre se calculan, incluso con lista vacía
+  let asisten = 0, noAsisten = 0, totalPersonas = 0;
+  (lista||[]).forEach(c => {
+    const asiste = (c.asistencia||'').toLowerCase().includes('confirmo') || (c.asistencia||'').includes('✅');
+    if(asiste){ asisten++; totalPersonas += parseInt(c.personas)||1; }
+    else noAsisten++;
+  });
+  document.getElementById('cf-total').textContent    = (lista||[]).length;
+  document.getElementById('cf-asisten').textContent  = asisten;
+  document.getElementById('cf-personas').textContent = totalPersonas;
+  document.getElementById('cf-no').textContent       = noAsisten;
+
   if(!lista || lista.length === 0) {
     tbody.innerHTML = '';
     empty.style.display = 'block';
@@ -416,18 +432,6 @@ function renderConfirmaciones(lista) {
     return;
   }
   empty.style.display = 'none';
-
-  // Stats
-  let asisten = 0, noAsisten = 0, totalPersonas = 0;
-  lista.forEach(c => {
-    const asiste = (c.asistencia||'').toLowerCase().includes('confirmo') || (c.asistencia||'').includes('✅');
-    if(asiste){ asisten++; totalPersonas += parseInt(c.personas)||1; }
-    else noAsisten++;
-  });
-  document.getElementById('cf-total').textContent    = lista.length;
-  document.getElementById('cf-asisten').textContent  = asisten;
-  document.getElementById('cf-personas').textContent = totalPersonas;
-  document.getElementById('cf-no').textContent       = noAsisten;
 
   tbody.innerHTML = lista.slice().reverse().map(c => {
     const asiste = (c.asistencia||'').toLowerCase().includes('confirmo') || (c.asistencia||'').includes('✅');
