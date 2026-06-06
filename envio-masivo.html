@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Envío Invitaciones · XV Brianna</title>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
   --rose: #e8a8bc; --champ: #f5d6e0; --ink: #2a1a22;
@@ -93,6 +94,24 @@ td{padding:11px 12px;vertical-align:middle;}
 <!-- IMPORTAR CONTACTOS -->
 <div class="card">
   <h2>Agregar contactos</h2>
+
+  <!-- Desde Excel -->
+  <div style="background:#fff9fb;border:1px solid var(--champ);border-radius:6px;padding:18px;margin-bottom:20px">
+    <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:12px">📊 Opción 1: Desde Excel (recomendado)</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-rose btn-sm" onclick="descargarPlantilla()">⬇ Descargar plantilla Excel</button>
+      <label class="btn btn-primary btn-sm" style="cursor:pointer">
+        📂 Subir Excel completo
+        <input type="file" id="excel-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="importarExcel(event)">
+      </label>
+    </div>
+    <div style="font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.5">
+      Descargá la plantilla, completala con los nombres y números, guardala en tu compu y subila. Así siempre tenés tu copia en Excel por las dudas.
+    </div>
+  </div>
+
+  <!-- Manual -->
+  <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:12px">✏️ Opción 2: Pegar manualmente</div>
   <div class="input-group">
     <label>Pegá los números (uno por línea, o separados por coma) — formato: 54911XXXXXXXX o nombre,número</label>
     <textarea id="import-text" placeholder="Ejemplo:&#10;María García,5491123456789&#10;Juan Pérez,5491198765432&#10;5491155443322"></textarea>
@@ -102,7 +121,22 @@ td{padding:11px 12px;vertical-align:middle;}
     <button class="btn btn-ghost btn-sm" onclick="limpiarTodo()">Borrar todo</button>
   </div>
   <div class="notice">
-    <strong>Formato aceptado:</strong> Número solo (54911XXXXXXXX) o Nombre,Número — Los números deben incluir código de país (Argentina: 549 + código de área + número, sin el 15).
+    <strong>Formato del número:</strong> con código de país. Argentina: 549 + código de área + número, sin el 15. Ej: 5491123456789
+  </div>
+</div>
+
+<!-- RESPALDO -->
+<div class="card" style="border-color:#a8d8a8">
+  <h2 style="color:var(--green)">🔒 Resguardar tus datos</h2>
+  <div class="notice" style="background:#f3fbf3;border-color:#c8e8c8;margin-top:0;margin-bottom:16px">
+    <strong>Importante:</strong> Los contactos se guardan en este navegador. Si limpiás el caché o cambiás de dispositivo, se pierden. <strong>Descargá un respaldo seguido</strong> y guardalo en tu mail o Drive. Después lo podés volver a cargar acá.
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-green" onclick="descargarRespaldo()">💾 Descargar respaldo</button>
+    <label class="btn btn-ghost" style="cursor:pointer">
+      📂 Restaurar respaldo
+      <input type="file" id="restore-file" accept=".json" style="display:none" onchange="restaurarRespaldo(event)">
+    </label>
   </div>
 </div>
 
@@ -111,28 +145,55 @@ td{padding:11px 12px;vertical-align:middle;}
   <h2>Mensaje de invitación</h2>
   <div class="input-group">
     <label>Texto del mensaje (podés personalizar)</label>
-    <textarea id="msg-template" rows="6">🌸 *¡Hola! Te invitamos a los XV de Brianna* 🌸
+    <textarea id="msg-template" rows="6">Hola! Estas invitado/a a los 15 de Brianna
 
-✨ El 21 de Agosto de 2026 celebramos esta noche tan especial y nos encantaría tenerte ahí.
+El 21 de Agosto de 2026 celebramos esta noche tan especial y nos encantaria tenerte ahi.
 
-📍 Janos Liniers · Av. Larrazábal 557 · CABA
-🕘 De 21:00 hs a 05:00 hs
+Lugar: Janos Liniers - Av. Larrazabal 557 - CABA
+Horario: de 21:00 a 05:00 hs
 
-Hacé click en el link para ver la invitación completa, confirmar asistencia y conocer todos los detalles:
+Entra al link para ver la invitacion completa, confirmar asistencia y conocer todos los detalles:
 
-👇 https://eonnembo.github.io/invitacion-brianna-xv/
+https://eonnembo.github.io/invitacion-brianna-xv/
 
-*Con amor, la familia Onnembo González* 💕</textarea>
+Con amor, la familia Onnembo Gonzalez</textarea>
   </div>
   <div class="msg-preview" id="msg-preview"></div>
 </div>
 
+<!-- CONFIRMACIONES RECIBIDAS -->
+<div class="card">
+  <h2>✓ Confirmaciones recibidas</h2>
+  <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+    <button class="btn btn-rose btn-sm" onclick="cargarConfirmaciones()">🔄 Actualizar confirmaciones</button>
+    <span id="conf-updated" style="font-size:11px;color:var(--ink-soft)"></span>
+  </div>
+  <div class="stats" style="margin-bottom:16px">
+    <div class="stat"><span class="stat-num" id="cf-total" style="color:var(--rose)">0</span><span class="stat-label">Confirmaciones</span></div>
+    <div class="stat"><span class="stat-num" id="cf-asisten" style="color:var(--green)">0</span><span class="stat-label">Asisten</span></div>
+    <div class="stat"><span class="stat-num" id="cf-personas" style="color:var(--ink)">0</span><span class="stat-label">Total personas</span></div>
+    <div class="stat"><span class="stat-num" id="cf-no" style="color:#aaa">0</span><span class="stat-label">No asisten</span></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Fecha</th><th>Nombre y Apellido</th><th>Personas</th><th>Acompañantes</th><th>Asiste</th><th>Dieta</th><th>Mensaje</th></tr></thead>
+      <tbody id="conf-body"></tbody>
+    </table>
+    <div id="conf-empty" style="text-align:center;padding:32px;color:var(--ink-soft);font-size:14px">
+      Tocá "Actualizar confirmaciones" para ver quiénes confirmaron ↑
+    </div>
+  </div>
+  <div class="notice">
+    <strong>💡 Las confirmaciones se actualizan</strong> desde la planilla de Google Sheets. Cada vez que toques "Actualizar" se traen las últimas. No hace falta WhatsApp ni mail.
+  </div>
+</div>
+
 <!-- LISTA DE CONTACTOS -->
 <div class="card">
-  <h2>Lista de contactos</h2>
+  <h2>Lista de contactos (envío)</h2>
   <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
     <button class="btn btn-rose btn-sm" onclick="enviarSiguiente()">▶ Enviar siguiente pendiente</button>
-    <button class="btn btn-ghost btn-sm" onclick="exportarCSV()">⬇ Exportar CSV</button>
+    <button class="btn btn-ghost btn-sm" onclick="exportarCSV()">⬇ Exportar Excel (con estados)</button>
     <button class="btn btn-ghost btn-sm" onclick="filtrar('todos')">Todos</button>
     <button class="btn btn-ghost btn-sm" onclick="filtrar('pendiente')">Solo pendientes</button>
   </div>
@@ -314,16 +375,181 @@ function filtrar(f) {
   renderTabla();
 }
 
-// ── EXPORTAR CSV ──
+// ── EXPORTAR EXCEL ──
 function exportarCSV() {
-  const rows = [['Nombre','Número','Estado','Fecha Envío']];
-  contactos.forEach(c=>rows.push([c.nombre,c.numero,c.estado,c.fechaEnvio||'']));
-  const csv = rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
-  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const datos = [['Nombre','Numero de WhatsApp','Estado','Fecha Envio']];
+  contactos.forEach(c=>datos.push([c.nombre, c.numero, c.estado, c.fechaEnvio||'']));
+  const ws = XLSX.utils.aoa_to_sheet(datos);
+  ws['!cols'] = [{wch:30},{wch:25},{wch:15},{wch:22}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Invitados');
+  XLSX.writeFile(wb, 'invitados-brianna-xv.xlsx');
+  toast('⬇ Excel exportado con el estado de cada contacto');
+}
+
+// ── CONFIRMACIONES DESDE SHEETS ──
+const CONF_URL = 'https://script.google.com/macros/s/AKfycbzWmRH-8HkDNK5Qb0wy9Wu4t_7k3lrNWOHocR-RPotx-0EmffH-_ZYgHPDbD1bI35LY-w/exec';
+
+async function cargarConfirmaciones() {
+  const btn = event?.target;
+  if(btn) btn.textContent = '⏳ Cargando...';
+  try {
+    const resp = await fetch(CONF_URL + '?action=list');
+    const data = await resp.json();
+    renderConfirmaciones(data.confirmaciones || data || []);
+    document.getElementById('conf-updated').textContent = 'Actualizado: ' + new Date().toLocaleString('es-AR');
+  } catch(e) {
+    toast('Error al cargar. Verificá el Apps Script.');
+    console.error(e);
+  }
+  if(btn) btn.textContent = '🔄 Actualizar confirmaciones';
+}
+
+function renderConfirmaciones(lista) {
+  const tbody = document.getElementById('conf-body');
+  const empty = document.getElementById('conf-empty');
+
+  if(!lista || lista.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    empty.textContent = 'Todavía no hay confirmaciones.';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // Stats
+  let asisten = 0, noAsisten = 0, totalPersonas = 0;
+  lista.forEach(c => {
+    const asiste = (c.asistencia||'').toLowerCase().includes('confirmo') || (c.asistencia||'').includes('✅');
+    if(asiste){ asisten++; totalPersonas += parseInt(c.personas)||1; }
+    else noAsisten++;
+  });
+  document.getElementById('cf-total').textContent    = lista.length;
+  document.getElementById('cf-asisten').textContent  = asisten;
+  document.getElementById('cf-personas').textContent = totalPersonas;
+  document.getElementById('cf-no').textContent       = noAsisten;
+
+  tbody.innerHTML = lista.slice().reverse().map(c => {
+    const asiste = (c.asistencia||'').toLowerCase().includes('confirmo') || (c.asistencia||'').includes('✅');
+    const nombreCompleto = `${c.nombre||''} ${c.apellido||''}`.trim();
+    return `<tr>
+      <td style="font-size:11px;color:var(--ink-soft)">${c.fecha||''}</td>
+      <td><strong style="font-weight:400">${nombreCompleto}</strong></td>
+      <td style="text-align:center">${c.personas||'-'}</td>
+      <td style="font-size:12px;color:var(--ink-soft)">${c.acompanantes||'-'}</td>
+      <td><span class="badge badge-${asiste?'sent':'skip'}">${asiste?'✓ Sí':'No'}</span></td>
+      <td style="font-size:12px;color:var(--ink-soft)">${c.dieta||'-'}</td>
+      <td style="font-size:12px;color:var(--ink-soft);max-width:200px">${c.mensaje||'-'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── EXCEL: PLANTILLA E IMPORTACIÓN ──
+function descargarPlantilla() {
+  const datos = [
+    ['Nombre', 'Numero de WhatsApp'],
+    ['Maria Garcia', '5491123456789'],
+    ['Juan Perez', '5491198765432'],
+    ['', ''],
+    ['', ''],
+    ['', ''],
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(datos);
+  ws['!cols'] = [{wch:30},{wch:25}];
+  // Forzar columna B como texto para no perder ceros
+  for(let r=1; r<datos.length; r++){
+    const cell = 'B'+(r+1);
+    if(ws[cell]) ws[cell].t = 's';
+  }
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Invitados');
+  XLSX.writeFile(wb, 'plantilla-invitados-brianna.xlsx');
+  toast('⬇ Plantilla descargada');
+}
+
+function importarExcel(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+
+      let agregados = 0;
+      rows.forEach((row, idx) => {
+        if(idx === 0) return; // saltar encabezado
+        let nombre = String(row[0]||'').trim();
+        let numero = String(row[1]||'').replace(/\D/g,'');
+        // Saltar ejemplos y vacíos
+        if(!numero || numero.length < 8) return;
+        if(nombre==='Maria Garcia' || nombre==='Juan Perez') return;
+
+        if(numero.startsWith('0')) numero = '54'+numero.slice(1);
+        if(!numero.startsWith('54')) numero = '54'+numero;
+        if(contactos.some(c=>c.numero===numero)) return;
+
+        contactos.push({
+          id: Date.now()+Math.random(),
+          nombre: nombre || `Invitado ${contactos.length+1}`,
+          numero, estado:'pendiente', fechaEnvio:null
+        });
+        agregados++;
+      });
+      guardar(); renderTabla(); renderStats();
+      toast(`✅ ${agregados} contacto(s) importado(s) desde Excel`);
+    } catch(err) {
+      toast('Error al leer el Excel');
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  event.target.value = '';
+}
+
+// ── RESPALDO ──
+function descargarRespaldo() {
+  const data = {
+    version: 1,
+    fecha: new Date().toISOString(),
+    contactos: contactos,
+    mensaje: document.getElementById('msg-template').value
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'invitados-brianna-xv.csv';
+  a.download = `respaldo-invitados-brianna-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
+  toast('💾 Respaldo descargado. ¡Guardalo en tu mail o Drive!');
+}
+
+function restaurarRespaldo(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(data.contactos) {
+        if(contactos.length > 0 && !confirm('Esto reemplazará los contactos actuales. ¿Continuar?')) return;
+        contactos = data.contactos;
+        if(data.mensaje) document.getElementById('msg-template').value = data.mensaje;
+        guardar();
+        renderTabla();
+        renderStats();
+        renderPreview();
+        toast('✅ Respaldo restaurado: ' + contactos.length + ' contactos');
+      } else {
+        toast('Archivo no válido');
+      }
+    } catch(err) {
+      toast('Error al leer el archivo');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
 }
 
 // ── TOAST ──

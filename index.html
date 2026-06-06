@@ -753,7 +753,8 @@ footer .footer-name{
   <p class="section-body" style="text-align:center">Para poder preparar todo con amor, necesitamos saber si vas a estar. ¡Tu confirmación es el primer paso para esta noche inolvidable!</p>
   <div class="confirm-form">
     <div id="form-content">
-      <div class="form-group"><label class="form-label">Tu nombre completo *</label><input class="form-input" id="f-nombre" type="text" placeholder="Tu nombre y apellido 😊"></div>
+      <div class="form-group"><label class="form-label">Nombre *</label><input class="form-input" id="f-nombre" type="text" placeholder="Tu nombre"></div>
+      <div class="form-group"><label class="form-label">Apellido *</label><input class="form-input" id="f-apellido" type="text" placeholder="Tu apellido"></div>
       <div class="form-group"><label class="form-label">¿Cuántos asisten? *</label><select class="form-select" id="f-personas" onchange="actualizarNombres(this.value)"><option value="">Seleccioná</option><option value="1">Solo yo (1 persona)</option><option value="2">2 personas</option><option value="3">3 personas</option><option value="4">4 personas</option><option value="5">5 personas</option><option value="6">6 o más</option></select></div>
       <div class="form-group" id="extra-nombres"><label class="form-label">Nombres de los acompañantes *</label><div id="nombres-container"></div></div>
       <div class="form-group"><label class="form-label">¿Asistís? *</label><div class="radio-group"><div class="radio-option"><input type="radio" name="asistencia" id="r-si" value="✅ Confirmo asistencia"><label class="radio-label" for="r-si">✅ ¡Voy!</label></div><div class="radio-option"><input type="radio" name="asistencia" id="r-no" value="❌ No puedo asistir"><label class="radio-label" for="r-no">😔 No puedo</label></div></div></div>
@@ -1004,19 +1005,19 @@ function toggleMusic(){
 const SHEETS_URL='https://script.google.com/macros/s/AKfycbzWmRH-8HkDNK5Qb0wy9Wu4t_7k3lrNWOHocR-RPotx-0EmffH-_ZYgHPDbD1bI35LY-w/exec';
 function guardarEnSheets(datos){
   try{
-    // GET request (Sheets + mail vía Apps Script)
+    // Un solo método para evitar duplicados
     new Image().src=SHEETS_URL+'?'+new URLSearchParams(datos).toString();
-    // POST como respaldo
-    fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(datos)}).catch(()=>{});
   }catch(e){}
 }
 function enviarConfirmacion(){
   const nombre=document.getElementById('f-nombre').value.trim();
+  const apellido=document.getElementById('f-apellido').value.trim();
   const personas=document.getElementById('f-personas').value;
   const asistencia=document.querySelector('input[name="asistencia"]:checked');
   const dieta=document.getElementById('f-dieta').value.trim();
   const mensaje=document.getElementById('f-mensaje').value.trim();
   if(!nombre){alert('Por favor ingresá tu nombre 😊');return;}
+  if(!apellido){alert('Por favor ingresá tu apellido 😊');return;}
   if(!personas){alert('Por favor indicá cuántas personas asisten 😊');return;}
   if(!asistencia){alert('Por favor indicá si vas a asistir 😊');return;}
   const cantExtra=parseInt(personas)-1;
@@ -1024,10 +1025,10 @@ function enviarConfirmacion(){
   if(cantExtra>0&&cantExtra<6){for(let i=1;i<=cantExtra;i++){const inp=document.getElementById(`f-acomp-${i}`);if(inp&&inp.value.trim())nombresAcomp.push(inp.value.trim());}}
   else if(cantExtra>=5){const inp=document.getElementById('f-acomp-multi');if(inp&&inp.value.trim())nombresAcomp.push(inp.value.trim());}
   // Guardar en Sheets (silencioso)
-  const datosConfirm = {fecha:new Date().toLocaleString('es-AR'),nombre,personas,acompanantes:nombresAcomp.join(', '),asistencia:asistencia.value,dieta,mensaje};
+  const datosConfirm = {fecha:new Date().toLocaleString('es-AR'),nombre,apellido,personas,acompanantes:nombresAcomp.join(', '),asistencia:asistencia.value,dieta,mensaje};
   guardarEnSheets(datosConfirm);
   // Marcar como confirmado en localStorage para evitar doble envío
-  localStorage.setItem('brianna_xv_confirmado', JSON.stringify({nombre, fecha: new Date().toISOString()}));
+  localStorage.setItem('brianna_xv_confirmado', JSON.stringify({nombre, apellido, fecha: new Date().toISOString()}));
   document.getElementById('form-content').style.display='none';
   document.getElementById('success-msg').style.display='block';
 }
