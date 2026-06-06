@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envío Invitaciones · XV Brianna</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rose: #e8a8bc; --champ: #f5d6e0; --ink: #2a1a22;
+  --ink-soft: #9a6878; --white: #fff; --cream: #fff8fb;
+  --green: #5cb85c; --orange: #f0a030; --red: #e05050;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Raleway',sans-serif;font-weight:300;background:var(--cream);color:var(--ink);min-height:100vh;padding:24px 16px;}
+
+.header{text-align:center;margin-bottom:32px;}
+.header h1{font-size:28px;font-weight:400;color:var(--ink);margin-bottom:6px;}
+.header p{font-size:13px;color:var(--ink-soft);letter-spacing:.05em;}
+
+.card{background:var(--white);border:1px solid var(--champ);border-radius:8px;padding:24px;margin-bottom:20px;box-shadow:0 4px 20px rgba(180,80,120,.06);}
+.card h2{font-size:14px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--rose);margin-bottom:16px;}
+
+/* STATS */
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;}
+.stat{flex:1;min-width:80px;text-align:center;background:var(--cream);border:1px solid var(--champ);border-radius:6px;padding:12px;}
+.stat-num{font-size:28px;font-weight:300;color:var(--ink);display:block;}
+.stat-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);}
+
+/* INPUT ÁREA */
+.input-group{margin-bottom:16px;}
+label{display:block;font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;}
+textarea,input[type=text]{width:100%;padding:12px 16px;border:1px solid var(--champ);border-radius:4px;background:var(--cream);font-family:'Raleway',sans-serif;font-size:14px;font-weight:300;outline:none;transition:border-color .2s;}
+textarea:focus,input:focus{border-color:var(--rose);background:var(--white);}
+textarea{min-height:90px;resize:vertical;}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border:none;border-radius:4px;font-family:'Raleway',sans-serif;font-size:13px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.btn-primary{background:var(--ink);color:var(--white);}
+.btn-primary:hover{background:#4a2a38;box-shadow:0 4px 16px rgba(42,26,34,.25);}
+.btn-rose{background:var(--rose);color:var(--white);}
+.btn-rose:hover{background:var(--ink);color:var(--white);}
+.btn-sm{padding:8px 16px;font-size:11px;}
+.btn-green{background:var(--green);color:var(--white);}
+.btn-ghost{background:transparent;border:1px solid var(--champ);color:var(--ink-soft);}
+.btn-ghost:hover{border-color:var(--rose);color:var(--rose);}
+
+/* TABLA CONTACTOS */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+thead tr{border-bottom:2px solid var(--champ);}
+th{text-align:left;font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--ink-soft);padding:10px 12px;font-weight:400;}
+tbody tr{border-bottom:1px solid var(--cream);transition:background .15s;}
+tbody tr:hover{background:var(--cream);}
+td{padding:11px 12px;vertical-align:middle;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;letter-spacing:.1em;}
+.badge-pending{background:#fff3e0;color:var(--orange);border:1px solid #f0c060;}
+.badge-sent{background:#e8f5e9;color:var(--green);border:1px solid #a8d8a8;}
+.badge-skip{background:#fafafa;color:#999;border:1px solid #ddd;}
+
+.action-btns{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* MENSAJE PREVIEW */
+.msg-preview{background:var(--cream);border-left:3px solid var(--rose);border-radius:0 6px 6px 0;padding:14px 16px;font-size:13px;line-height:1.7;color:var(--ink-mid);white-space:pre-wrap;margin-top:12px;}
+
+/* IMPORT */
+.import-area{border:2px dashed var(--champ);border-radius:6px;padding:24px;text-align:center;color:var(--ink-soft);font-size:13px;cursor:pointer;transition:all .2s;}
+.import-area:hover{border-color:var(--rose);color:var(--rose);}
+
+.notice{background:#fff9fb;border:1px solid var(--champ);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--ink-soft);line-height:1.6;margin-top:12px;}
+.notice strong{color:var(--ink);}
+
+#toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:var(--white);padding:12px 20px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;}
+#toast.show{opacity:1;}
+
+@media(max-width:480px){.stats{gap:8px;}.stat{padding:8px;}.stat-num{font-size:22px;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌸 XV de Brianna</h1>
+  <p>Herramienta de envío de invitaciones · 21 Agosto 2026</p>
+</div>
+
+<!-- STATS -->
+<div class="stats" id="stats">
+  <div class="stat"><span class="stat-num" id="st-total">0</span><span class="stat-label">Total</span></div>
+  <div class="stat"><span class="stat-num" id="st-pending" style="color:var(--orange)">0</span><span class="stat-label">Pendientes</span></div>
+  <div class="stat"><span class="stat-num" id="st-sent" style="color:var(--green)">0</span><span class="stat-label">Enviados</span></div>
+  <div class="stat"><span class="stat-num" id="st-skip" style="color:#aaa">0</span><span class="stat-label">Omitidos</span></div>
+</div>
+
+<!-- IMPORTAR CONTACTOS -->
+<div class="card">
+  <h2>Agregar contactos</h2>
+  <div class="input-group">
+    <label>Pegá los números (uno por línea, o separados por coma) — formato: 54911XXXXXXXX o nombre,número</label>
+    <textarea id="import-text" placeholder="Ejemplo:&#10;María García,5491123456789&#10;Juan Pérez,5491198765432&#10;5491155443322"></textarea>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="importarContactos()">Agregar contactos</button>
+    <button class="btn btn-ghost btn-sm" onclick="limpiarTodo()">Borrar todo</button>
+  </div>
+  <div class="notice">
+    <strong>Formato aceptado:</strong> Número solo (54911XXXXXXXX) o Nombre,Número — Los números deben incluir código de país (Argentina: 549 + código de área + número, sin el 15).
+  </div>
+</div>
+
+<!-- MENSAJE -->
+<div class="card">
+  <h2>Mensaje de invitación</h2>
+  <div class="input-group">
+    <label>Texto del mensaje (podés personalizar)</label>
+    <textarea id="msg-template" rows="6">🌸 *¡Hola! Te invitamos a los XV de Brianna* 🌸
+
+✨ El 21 de Agosto de 2026 celebramos esta noche tan especial y nos encantaría tenerte ahí.
+
+📍 Janos Liniers · Av. Larrazábal 557 · CABA
+🕘 De 21:00 hs a 05:00 hs
+
+Hacé click en el link para ver la invitación completa, confirmar asistencia y conocer todos los detalles:
+
+👇 https://eonnembo.github.io/invitacion-brianna-xv/
+
+*Con amor, la familia Onnembo González* 💕</textarea>
+  </div>
+  <div class="msg-preview" id="msg-preview"></div>
+</div>
+
+<!-- LISTA DE CONTACTOS -->
+<div class="card">
+  <h2>Lista de contactos</h2>
+  <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+    <button class="btn btn-rose btn-sm" onclick="enviarSiguiente()">▶ Enviar siguiente pendiente</button>
+    <button class="btn btn-ghost btn-sm" onclick="exportarCSV()">⬇ Exportar CSV</button>
+    <button class="btn btn-ghost btn-sm" onclick="filtrar('todos')">Todos</button>
+    <button class="btn btn-ghost btn-sm" onclick="filtrar('pendiente')">Solo pendientes</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Nombre</th><th>Número</th><th>Estado</th><th>Acción</th></tr></thead>
+      <tbody id="tabla-body"></tbody>
+    </table>
+    <div id="tabla-empty" style="text-align:center;padding:32px;color:var(--ink-soft);font-size:14px">
+      Aún no hay contactos. Agregá números arriba ↑
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── STORAGE ──
+const KEY = 'brianna_xv_contactos';
+let contactos = [];
+let filtroActual = 'todos';
+
+function cargar() {
+  try { contactos = JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){ contactos=[]; }
+  renderTabla();
+  renderStats();
+  renderPreview();
+}
+
+function guardar() {
+  localStorage.setItem(KEY, JSON.stringify(contactos));
+}
+
+// ── IMPORTAR ──
+function importarContactos() {
+  const txt = document.getElementById('import-text').value.trim();
+  if(!txt){ toast('Ingresá al menos un número'); return; }
+  
+  const lines = txt.split(/[\n,]+/).map(l=>l.trim()).filter(Boolean);
+  let agregados = 0;
+  
+  lines.forEach(line => {
+    let nombre = '', numero = '';
+    
+    // Detectar formato "Nombre,Número"
+    const partes = line.split(',').map(p=>p.trim());
+    if(partes.length >= 2 && /^\d+$/.test(partes[partes.length-1].replace(/\s/g,''))) {
+      numero = partes[partes.length-1].replace(/\D/g,'');
+      nombre = partes.slice(0,-1).join(' ');
+    } else {
+      numero = line.replace(/\D/g,'');
+      nombre = '';
+    }
+    
+    if(numero.length < 8) return; // número inválido
+    
+    // Normalizar número argentino
+    if(numero.startsWith('0')) numero = '54' + numero.slice(1);
+    if(!numero.startsWith('54')) numero = '54' + numero;
+    
+    // Verificar duplicado
+    if(contactos.some(c=>c.numero===numero)) return;
+    
+    contactos.push({
+      id: Date.now() + Math.random(),
+      nombre: nombre || `Invitado ${contactos.length+1}`,
+      numero,
+      estado: 'pendiente', // pendiente | enviado | omitido
+      fechaEnvio: null
+    });
+    agregados++;
+  });
+  
+  guardar();
+  renderTabla();
+  renderStats();
+  document.getElementById('import-text').value = '';
+  toast(`✅ ${agregados} contacto(s) agregado(s)`);
+}
+
+// ── RENDER TABLA ──
+function renderTabla() {
+  const tbody = document.getElementById('tabla-body');
+  const empty = document.getElementById('tabla-empty');
+  
+  let lista = filtroActual === 'todos' ? contactos : contactos.filter(c=>c.estado===filtroActual);
+  
+  if(lista.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  
+  tbody.innerHTML = lista.map((c,i) => `
+    <tr id="row-${c.id}">
+      <td style="color:var(--ink-soft);font-size:12px">${i+1}</td>
+      <td><strong style="font-weight:400">${c.nombre}</strong></td>
+      <td style="font-family:monospace;font-size:12px;color:var(--ink-soft)">+${c.numero}</td>
+      <td>
+        <span class="badge badge-${c.estado}">
+          ${c.estado==='pendiente'?'Pendiente':c.estado==='enviado'?'✓ Enviado':'Omitido'}
+        </span>
+        ${c.fechaEnvio?`<div style="font-size:10px;color:var(--ink-soft);margin-top:2px">${c.fechaEnvio}</div>`:''}
+      </td>
+      <td>
+        <div class="action-btns">
+          ${c.estado!=='enviado'?`<button class="btn btn-green btn-sm" onclick="enviarUno('${c.id}')">📲 Enviar</button>`:''}
+          ${c.estado==='pendiente'?`<button class="btn btn-ghost btn-sm" onclick="marcarEstado('${c.id}','omitido')">Omitir</button>`:''}
+          ${c.estado!=='pendiente'?`<button class="btn btn-ghost btn-sm" onclick="marcarEstado('${c.id}','pendiente')">↩ Revertir</button>`:''}
+          <button class="btn btn-ghost btn-sm" onclick="eliminar('${c.id}')" style="color:var(--red)">✕</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderStats() {
+  document.getElementById('st-total').textContent   = contactos.length;
+  document.getElementById('st-pending').textContent = contactos.filter(c=>c.estado==='pendiente').length;
+  document.getElementById('st-sent').textContent    = contactos.filter(c=>c.estado==='enviado').length;
+  document.getElementById('st-skip').textContent    = contactos.filter(c=>c.estado==='omitido').length;
+}
+
+function renderPreview() {
+  const tmpl = document.getElementById('msg-template').value;
+  document.getElementById('msg-preview').textContent = tmpl;
+}
+document.getElementById('msg-template').addEventListener('input', renderPreview);
+
+// ── ENVIAR ──
+function getMensaje() {
+  return document.getElementById('msg-template').value.trim();
+}
+
+function enviarUno(id) {
+  const c = contactos.find(x=>String(x.id)===String(id));
+  if(!c) return;
+  const url = `https://wa.me/${c.numero}?text=${encodeURIComponent(getMensaje())}`;
+  window.open(url, '_blank');
+  // Marcar como enviado
+  c.estado = 'enviado';
+  c.fechaEnvio = new Date().toLocaleString('es-AR');
+  guardar();
+  renderTabla();
+  renderStats();
+  toast(`📲 WhatsApp abierto para ${c.nombre}`);
+}
+
+function enviarSiguiente() {
+  const siguiente = contactos.find(c=>c.estado==='pendiente');
+  if(!siguiente){ toast('No hay pendientes'); return; }
+  enviarUno(siguiente.id);
+}
+
+// ── ESTADO ──
+function marcarEstado(id, estado) {
+  const c = contactos.find(x=>String(x.id)===String(id));
+  if(!c) return;
+  c.estado = estado;
+  if(estado==='pendiente') c.fechaEnvio = null;
+  guardar(); renderTabla(); renderStats();
+}
+
+function eliminar(id) {
+  contactos = contactos.filter(x=>String(x.id)!==String(id));
+  guardar(); renderTabla(); renderStats();
+}
+
+function limpiarTodo() {
+  if(!confirm('¿Borrar todos los contactos?')) return;
+  contactos = [];
+  guardar(); renderTabla(); renderStats();
+}
+
+// ── FILTRAR ──
+function filtrar(f) {
+  filtroActual = f;
+  renderTabla();
+}
+
+// ── EXPORTAR CSV ──
+function exportarCSV() {
+  const rows = [['Nombre','Número','Estado','Fecha Envío']];
+  contactos.forEach(c=>rows.push([c.nombre,c.numero,c.estado,c.fechaEnvio||'']));
+  const csv = rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'invitados-brianna-xv.csv';
+  a.click();
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+cargar();
+</script>
+</body>
+</html>
