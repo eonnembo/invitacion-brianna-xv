@@ -761,8 +761,8 @@ footer .footer-name{
     <div id="form-content">
       <div class="form-group"><label class="form-label">Nombre *</label><input class="form-input" id="f-nombre" type="text" placeholder="Tu nombre"></div>
       <div class="form-group"><label class="form-label">Apellido *</label><input class="form-input" id="f-apellido" type="text" placeholder="Tu apellido"></div>
-      <div class="form-group"><label class="form-label">¿Cuántos asisten? *</label><select class="form-select" id="f-personas" onchange="actualizarNombres(this.value)"><option value="">Seleccioná</option><option value="1">Solo yo (1 persona)</option><option value="2">2 personas</option><option value="3">3 personas</option><option value="4">4 personas</option><option value="5">5 personas</option><option value="6">6 o más</option></select></div>
-      <div class="form-group" id="extra-nombres"><label class="form-label">Nombres de los acompañantes *</label><div id="nombres-container"></div></div>
+      <div class="form-group"><label class="form-label">Acompañantes</label><select class="form-select" id="f-personas" onchange="actualizarNombres(this.value)"><option value="0">Sin acompañantes (voy solo/a)</option><option value="1">1 acompañante</option><option value="2">2 acompañantes</option><option value="3">3 acompañantes</option><option value="4">4 acompañantes</option><option value="5">5 acompañantes</option></select></div>
+      <div class="form-group" id="extra-nombres"><label class="form-label">Nombre y apellido de los acompañantes *</label><div id="nombres-container"></div></div>
       <div class="form-group"><label class="form-label">¿Asistís? *</label><div class="radio-group"><div class="radio-option"><input type="radio" name="asistencia" id="r-si" value="✅ Confirmo asistencia"><label class="radio-label" for="r-si">✅ ¡Voy!</label></div><div class="radio-option"><input type="radio" name="asistencia" id="r-no" value="❌ No puedo asistir"><label class="radio-label" for="r-no">😔 No puedo</label></div></div></div>
       <div class="form-group"><label class="form-label">¿Tenés alguna restricción alimentaria?</label><input class="form-input" id="f-dieta" type="text" placeholder="Ej: vegetariano, celíaco, sin TACC..."></div>
       <div class="form-group"><label class="form-label">¿Querés dejarle un mensaje a Brianna?</label><textarea class="form-textarea" id="f-mensaje" placeholder="Un deseo, unas palabras lindas, lo que quieras... 💌"></textarea></div>
@@ -955,7 +955,7 @@ function copyAlias(){
 
 // ── NOMBRES ──
 function actualizarNombres(val){
-  const cantExtra=parseInt(val)-1;
+  const cantExtra=parseInt(val)||0;
   const container=document.getElementById('nombres-container');
   const wrapper=document.getElementById('extra-nombres');
   container.innerHTML='';
@@ -1026,9 +1026,8 @@ function enviarConfirmacion(){
   const cancion=document.getElementById('f-cancion').value.trim();
   if(!nombre){alert('Por favor ingresá tu nombre 😊');return;}
   if(!apellido){alert('Por favor ingresá tu apellido 😊');return;}
-  if(!personas){alert('Por favor indicá cuántas personas asisten 😊');return;}
   if(!asistencia){alert('Por favor indicá si vas a asistir 😊');return;}
-  const cantExtra=parseInt(personas)-1;
+  const cantExtra=parseInt(personas)||0;
   let nombresAcomp=[];
   if(cantExtra>0){
     for(let i=1;i<=cantExtra;i++){
@@ -1041,7 +1040,7 @@ function enviarConfirmacion(){
     }
   }
   // Guardar en Sheets (silencioso)
-  const datosConfirm = {fecha:new Date().toLocaleString('es-AR'),nombre,apellido,personas,acompanantes:nombresAcomp.join(', '),asistencia:asistencia.value,dieta,mensaje,cancion};
+  const datosConfirm = {fecha:new Date().toLocaleString('es-AR'),nombre,apellido,personas:String(cantExtra+1),acompanantes:nombresAcomp.join(', '),asistencia:asistencia.value,dieta,mensaje,cancion};
   guardarEnSheets(datosConfirm);
   // Marcar como confirmado en localStorage para evitar doble envío
   localStorage.setItem('brianna_xv_confirmado', JSON.stringify({nombre, apellido, fecha: new Date().toISOString()}));
