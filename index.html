@@ -1042,7 +1042,9 @@ function enviarConfirmacion(){
     }
   }
   // Guardar en Sheets (silencioso)
-  const datosConfirm = {fecha:new Date().toLocaleString('es-AR'),nombre,apellido,acompanantes:nombresAcomp.join(', '),acompJson:JSON.stringify(acompDetalle),asistencia:asistencia.value,dieta,mensaje,cancion};
+  const _d=new Date();
+  const fechaEnvio=`${String(_d.getDate()).padStart(2,'0')}/${String(_d.getMonth()+1).padStart(2,'0')}/${_d.getFullYear()} ${String(_d.getHours()).padStart(2,'0')}:${String(_d.getMinutes()).padStart(2,'0')}`;
+  const datosConfirm = {fecha:fechaEnvio,nombre,apellido,acompanantes:nombresAcomp.join(', '),acompJson:JSON.stringify(acompDetalle),asistencia:asistencia.value,dieta,mensaje,cancion};
   guardarEnSheets(datosConfirm);
   // Marcar como confirmado en localStorage para evitar doble envío
   localStorage.setItem('brianna_xv_confirmado', JSON.stringify({nombre, apellido, fecha: new Date().toISOString()}));

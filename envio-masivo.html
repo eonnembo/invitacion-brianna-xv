@@ -436,11 +436,21 @@ function renderConfirmaciones(lista) {
   }
   empty.style.display = 'none';
 
+  // Si Sheets devuelve la fecha como ISO (2026-06-06T13:24:51.000Z), la pasamos a formato legible
+  const fmtFecha = f => {
+    if(!f) return '';
+    const s = String(f);
+    if(/^\d{4}-\d{2}-\d{2}T/.test(s)){
+      const d = new Date(s);
+      return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+    return s;
+  };
   tbody.innerHTML = lista.slice().reverse().map(c => {
     const asiste = (c.asistencia||'').toLowerCase().includes('confirmo') || (c.asistencia||'').includes('✅');
     const nombreCompleto = `${c.nombre||''} ${c.apellido||''}`.trim();
     return `<tr>
-      <td style="font-size:11px;color:var(--ink-soft)">${c.fecha||''}</td>
+      <td style="font-size:11px;color:var(--ink-soft)">${fmtFecha(c.fecha)}</td>
       <td><strong style="font-weight:400">${nombreCompleto}</strong></td>
       <td style="font-size:12px;color:var(--ink-soft)">${c.acompanantes||'-'}</td>
       <td><span class="badge badge-${asiste?'sent':'skip'}">${asiste?'✓ Sí':'No'}</span></td>
