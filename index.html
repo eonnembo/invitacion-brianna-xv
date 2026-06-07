@@ -1029,6 +1029,7 @@ function enviarConfirmacion(){
   if(!asistencia){alert('Por favor indicá si vas a asistir 😊');return;}
   const cantExtra=parseInt(personas)||0;
   let nombresAcomp=[];
+  let acompDetalle=[];
   if(cantExtra>0){
     for(let i=1;i<=cantExtra;i++){
       const inpN=document.getElementById(`f-acomp-nombre-${i}`);
@@ -1037,10 +1038,11 @@ function enviarConfirmacion(){
       const a=inpA?inpA.value.trim():'';
       if(!n||!a){alert(`Por favor completá nombre y apellido del acompañante ${i} 😊`);return;}
       nombresAcomp.push(`${n} ${a}`);
+      acompDetalle.push({nombre:n,apellido:a});
     }
   }
   // Guardar en Sheets (silencioso)
-  const datosConfirm = {fecha:new Date().toLocaleString('es-AR'),nombre,apellido,personas:String(cantExtra+1),acompanantes:nombresAcomp.join(', '),asistencia:asistencia.value,dieta,mensaje,cancion};
+  const datosConfirm = {fecha:new Date().toLocaleString('es-AR'),nombre,apellido,acompanantes:nombresAcomp.join(', '),acompJson:JSON.stringify(acompDetalle),asistencia:asistencia.value,dieta,mensaje,cancion};
   guardarEnSheets(datosConfirm);
   // Marcar como confirmado en localStorage para evitar doble envío
   localStorage.setItem('brianna_xv_confirmado', JSON.stringify({nombre, apellido, fecha: new Date().toISOString()}));
