@@ -149,18 +149,19 @@ td{padding:11px 12px;vertical-align:middle;}
   <h2>Mensaje de invitación</h2>
   <div class="input-group">
     <label>Texto del mensaje (podés personalizar)</label>
-    <textarea id="msg-template" rows="6">Hola! Estas invitado/a a los 15 de Brianna
+    <textarea id="msg-template" rows="6">¡Hola! Estás invitado/a a los XV de Brianna
 
-El 21 de Agosto de 2026 celebramos esta noche tan especial y nos encantaria tenerte ahi.
+El 21 de Agosto de 2026 celebramos esta noche tan especial y nos encantaría tenerte ahí.
 
-Lugar: Janos Liniers - Av. Larrazabal 557 - CABA
+Lugar: Janos Liniers - Av. Larrazábal 557 - CABA
 Horario: de 21:00 a 05:00 hs
 
-Entra al link para ver la invitacion completa, confirmar asistencia y conocer todos los detalles:
+Hacé click en la imagen, para ver la invitación completa, confirmar asistencia y conocer todos los detalles:
 
 https://eonnembo.github.io/invitacion-brianna-xv/
 
-Con amor, la familia Onnembo Gonzalez</textarea>
+Con amor,
+BRI</textarea>
   </div>
   <div class="msg-preview" id="msg-preview"></div>
 </div>
@@ -175,7 +176,6 @@ Con amor, la familia Onnembo Gonzalez</textarea>
   <div class="stats" style="margin-bottom:16px">
     <div class="stat"><span class="stat-num" id="cf-total" style="color:var(--rose)">0</span><span class="stat-label">Confirmaciones</span></div>
     <div class="stat"><span class="stat-num" id="cf-asisten" style="color:var(--green)">0</span><span class="stat-label">Asisten</span></div>
-    <div class="stat"><span class="stat-num" id="cf-personas" style="color:var(--ink)">0</span><span class="stat-label">Total personas</span></div>
     <div class="stat"><span class="stat-num" id="cf-no" style="color:#aaa">0</span><span class="stat-label">No asisten</span></div>
   </div>
   <div class="table-wrap">
@@ -413,20 +413,19 @@ function renderConfirmaciones(lista) {
   const tbody = document.getElementById('conf-body');
   const empty = document.getElementById('conf-empty');
 
-  // Stats — cada fila es una persona. Las filas "Acompañante de X" suman al total
-  // de personas pero no cuentan como confirmación (la confirmó su invitado principal).
+  // Stats — cada fila es una persona (invitados y acompañantes).
+  // "Asisten" suma todas las personas que van (incluye acompañantes).
+  // "Confirmaciones" cuenta solo los formularios enviados (invitados principales).
   const esAcomp = c => (c.acompanantes||'').startsWith('Acompañante de');
-  let asisten = 0, noAsisten = 0, totalPersonas = 0, confirmaciones = 0;
+  let asisten = 0, noAsisten = 0, confirmaciones = 0;
   (lista||[]).forEach(c => {
     const asiste = (c.asistencia||'').toLowerCase().includes('confirmo') || (c.asistencia||'').includes('✅');
-    if(esAcomp(c)){ if(asiste) totalPersonas++; return; }
-    confirmaciones++;
-    if(asiste){ asisten++; totalPersonas++; }
+    if(!esAcomp(c)) confirmaciones++;
+    if(asiste) asisten++;
     else noAsisten++;
   });
   document.getElementById('cf-total').textContent    = confirmaciones;
   document.getElementById('cf-asisten').textContent  = asisten;
-  document.getElementById('cf-personas').textContent = totalPersonas;
   document.getElementById('cf-no').textContent       = noAsisten;
 
   if(!lista || lista.length === 0) {
