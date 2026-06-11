@@ -1024,12 +1024,17 @@ function toggleMusic(){
 // ── CONFIRMACIÓN ──
 const SHEETS_URL='https://script.google.com/macros/s/AKfycbzWmRH-8HkDNK5Qb0wy9Wu4t_7k3lrNWOHocR-RPotx-0EmffH-_ZYgHPDbD1bI35LY-w/exec';
 function guardarEnSheets(datos){
-  try{
-    // Un solo método para evitar duplicados
-    new Image().src=SHEETS_URL+'?'+new URLSearchParams(datos).toString();
-  }catch(e){}
+  // Devuelve una promesa que resuelve true solo si el pedido salió del dispositivo.
+  // mode:'no-cors' => el navegador envía el dato y resuelve si hubo respuesta;
+  // solo rechaza ante una falla real de red (sin conexión, conexión cortada).
+  const url=SHEETS_URL+'?'+new URLSearchParams(datos).toString();
+  const ctrl=new AbortController();
+  const timeout=setTimeout(()=>ctrl.abort(),15000);
+  return fetch(url,{method:'GET',mode:'no-cors',signal:ctrl.signal})
+    .then(()=>{clearTimeout(timeout);return true;})
+    .catch(()=>{clearTimeout(timeout);return false;});
 }
-function enviarConfirmacion(){
+async function enviarConfirmacion(){
   const nombre=document.getElementById('f-nombre').value.trim();
   const apellido=document.getElementById('f-apellido').value.trim();
   const personas=document.getElementById('f-personas').value;
@@ -1054,12 +1059,25 @@ function enviarConfirmacion(){
       acompDetalle.push({nombre:n,apellido:a});
     }
   }
-  // Guardar en Sheets (silencioso)
+  // Guardar en Sheets
   const _d=new Date();
   const fechaEnvio=`${String(_d.getDate()).padStart(2,'0')}/${String(_d.getMonth()+1).padStart(2,'0')}/${_d.getFullYear()} ${String(_d.getHours()).padStart(2,'0')}:${String(_d.getMinutes()).padStart(2,'0')}`;
   const datosConfirm = {fecha:fechaEnvio,nombre,apellido,acompanantes:nombresAcomp.join(', '),acompJson:JSON.stringify(acompDetalle),asistencia:asistencia.value,dieta,mensaje,cancion};
-  guardarEnSheets(datosConfirm);
-  // Marcar como confirmado en localStorage para evitar doble envío
+
+  const btn=document.querySelector('.btn-confirm');
+  const txtOriginal=btn?btn.textContent:'Enviar';
+  if(btn){btn.disabled=true;btn.style.opacity='.6';btn.textContent='Enviando...';}
+
+  const ok=await guardarEnSheets(datosConfirm);
+
+  if(!ok){
+    // El envío NO salió: no marcamos confirmado para que pueda reintentar.
+    if(btn){btn.disabled=false;btn.style.opacity='1';btn.textContent='Reintentar envío';}
+    alert('No pudimos registrar tu confirmación 😔\n\nRevisá tu conexión a internet y tocá "Reintentar envío".\nSi el problema continúa, avisanos por WhatsApp así te anotamos a mano.');
+    return;
+  }
+
+  // El envío salió OK: recién ahora marcamos confirmado y mostramos el agradecimiento.
   localStorage.setItem('brianna_xv_confirmado', JSON.stringify({nombre, apellido, fecha: new Date().toISOString()}));
   document.getElementById('form-content').style.display='none';
   document.getElementById('success-msg').style.display='block';
