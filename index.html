@@ -972,6 +972,10 @@ updateCountdown();setInterval(updateCountdown,1000);
       const cm = document.getElementById('cupo-msg');
       if(fc) fc.style.display='none';
       if(cm) cm.style.display='none';
+      const ti = document.getElementById('confirm-title');
+      if(ti) ti.textContent='¡Nos vemos en la fiesta!';
+      const bo = document.getElementById('confirm-body');
+      if(bo) bo.textContent='Tu lugar ya está reservado. ¡Falta cada vez menos para la gran noche!';
       if(sm){
         sm.style.display='block';
         const titulo = sm.querySelector('.success-title');
