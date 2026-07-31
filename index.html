@@ -793,9 +793,14 @@ footer .footer-name{
 <!-- ══════ CONFIRMACIÓN ══════ -->
 <div class="confirm-section">
   <span class="section-tag">Queremos contar con vos</span>
-  <h2 class="section-title" style="text-align:center">Confirmá tu asistencia</h2>
-  <p class="section-body" style="text-align:center">Para poder preparar todo con amor, necesitamos saber si vas a estar. ¡Tu confirmación es el primer paso para esta noche inolvidable!</p>
+  <h2 class="section-title" id="confirm-title" style="text-align:center">Confirmá tu asistencia</h2>
+  <p class="section-body" id="confirm-body" style="text-align:center">Para poder preparar todo con amor, necesitamos saber si vas a estar. ¡Tu confirmación es el primer paso para esta noche inolvidable!</p>
   <div class="confirm-form">
+    <div id="cupo-msg" style="display:none;text-align:center;padding:32px 16px">
+      <span class="success-icon">✨</span>
+      <div class="success-title">Confirmaciones cerradas</div>
+      <p class="success-sub">Ya completamos la lista de invitados 💛<br>Si confirmaste tu asistencia, ¡te esperamos el <strong>viernes 21 de agosto</strong> para brillar juntos!</p>
+    </div>
     <div id="form-content">
       <div class="form-group"><label class="form-label">Nombre *</label><input class="form-input" id="f-nombre" type="text" placeholder="Tu nombre"></div>
       <div class="form-group"><label class="form-label">Apellido *</label><input class="form-input" id="f-apellido" type="text" placeholder="Tu apellido"></div>
@@ -964,7 +969,9 @@ updateCountdown();setInterval(updateCountdown,1000);
       const d = JSON.parse(prev);
       const fc = document.getElementById('form-content');
       const sm = document.getElementById('success-msg');
+      const cm = document.getElementById('cupo-msg');
       if(fc) fc.style.display='none';
+      if(cm) cm.style.display='none';
       if(sm){
         sm.style.display='block';
         const titulo = sm.querySelector('.success-title');
@@ -1125,6 +1132,39 @@ function agendarAvisoDiario(){
 
 // ── CONFIRMACIÓN ──
 const SHEETS_URL='https://script.google.com/macros/s/AKfycbzWmRH-8HkDNK5Qb0wy9Wu4t_7k3lrNWOHocR-RPotx-0EmffH-_ZYgHPDbD1bI35LY-w/exec';
+
+// ── CUPO DINÁMICO ──
+// Consulta al Apps Script cuántas personas confirmadas hay en el Sheet
+// (titulares + acompañantes). Si el Sheet baja de CUPO_MAXIMO (ej: borrás
+// una fila), el formulario se rehabilita solo. Si el endpoint todavía no
+// soporta ?action=count devuelve null y el formulario funciona normal.
+const CUPO_MAXIMO=100;
+async function obtenerTotalConfirmados(){
+  try{
+    const ctrl=new AbortController();
+    const t=setTimeout(()=>ctrl.abort(),10000);
+    const r=await fetch(SHEETS_URL+'?action=count',{signal:ctrl.signal});
+    clearTimeout(t);
+    if(!r.ok) return null;
+    const d=await r.json();
+    return (typeof d.total==='number')?d.total:null;
+  }catch(e){return null;}
+}
+function mostrarCupoLleno(){
+  if(localStorage.getItem('brianna_xv_confirmado')) return; // conserva su mensaje personal
+  const fc=document.getElementById('form-content');
+  const cm=document.getElementById('cupo-msg');
+  if(fc) fc.style.display='none';
+  if(cm) cm.style.display='block';
+  const ti=document.getElementById('confirm-title');
+  if(ti) ti.textContent='¡Gracias por tanto amor!';
+  const bo=document.getElementById('confirm-body');
+  if(bo) bo.textContent='La respuesta fue increíble y llegamos al cupo máximo de invitados, por eso ya no podemos recibir nuevas confirmaciones.';
+}
+(async function(){
+  const total=await obtenerTotalConfirmados();
+  if(total!==null&&total>=CUPO_MAXIMO) mostrarCupoLleno();
+})();
 function guardarEnSheets(datos){
   // Devuelve una promesa que resuelve true solo si el pedido salió del dispositivo.
   // mode:'no-cors' => el navegador envía el dato y resuelve si hubo respuesta;
@@ -1169,6 +1209,26 @@ async function enviarConfirmacion(){
   const btn=document.querySelector('.btn-confirm');
   const txtOriginal=btn?btn.textContent:'Enviar';
   if(btn){btn.disabled=true;btn.style.opacity='.6';btn.textContent='Enviando...';}
+
+  // Re-chequeo de cupo justo antes de enviar (por si se llenó mientras completaba)
+  const esConfirmacion=asistencia.value.indexOf('Confirmo')!==-1;
+  if(esConfirmacion){
+    const total=await obtenerTotalConfirmados();
+    if(total!==null){
+      const grupo=1+cantExtra;
+      if(total>=CUPO_MAXIMO){
+        if(btn){btn.disabled=false;btn.style.opacity='1';btn.textContent=txtOriginal;}
+        mostrarCupoLleno();
+        alert('Lo sentimos muchísimo 😔 justo se completó el cupo de invitados.');
+        return;
+      }
+      if(total+grupo>CUPO_MAXIMO){
+        if(btn){btn.disabled=false;btn.style.opacity='1';btn.textContent=txtOriginal;}
+        alert('No nos quedan lugares suficientes para tu grupo completo 😔\nProbá con menos acompañantes o avisanos por WhatsApp.');
+        return;
+      }
+    }
+  }
 
   const ok=await guardarEnSheets(datosConfirm);
 
